@@ -1,0 +1,121 @@
+.contact {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 85vh;
+    background: linear-gradient(135deg, #fff0f6, #ffffff);
+    padding: 20px;
+}
+
+.contact__container {
+    background: #ffffff;
+    padding: 42px 52px;
+    border-radius: 22px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    max-width: 620px;
+    width: 100%;
+    text-align: center;
+    animation: fadeUp 0.5s ease;
+}
+
+.contact__title {
+    font-size: 2.1rem;
+    color: #222;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.contact__desc {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 28px;
+    line-height: 1.5;
+}
+
+.contact__form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.contact__group {
+    text-align: left;
+}
+
+.contact__label {
+    display: block;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+}
+
+.contact__input,
+.contact__textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 14px;
+    outline: none;
+    font-size: 1rem;
+    background: #fafafa;
+    transition: all 0.25s ease;
+}
+
+.contact__input:focus,
+.contact__textarea:focus {
+    background: #fff;
+    border-color: #ff69b4;
+    box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.15);
+}
+
+.contact__textarea {
+    resize: none;
+    min-height: 120px;
+}
+
+.contact__button {
+    margin-top: 10px;
+    background: linear-gradient(135deg, #ff69b4, #ff4081);
+    color: #fff;
+    padding: 13px 0;
+    border: none;
+    border-radius: 32px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 18px rgba(255, 105, 180, 0.35);
+}
+
+.contact__button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(255, 64, 129, 0.45);
+}
+
+.contact__button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(255, 64, 129, 0.3);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+@media (max-width: 600px) {
+    .contact__container {
+        padding: 32px 28px;
+    }
+
+    .contact__title {
+        font-size: 1.7rem;
+    }
+}

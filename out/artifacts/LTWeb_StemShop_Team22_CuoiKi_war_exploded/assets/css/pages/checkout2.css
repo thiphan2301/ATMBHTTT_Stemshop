@@ -1,0 +1,227 @@
+.back {
+    background-color: #f6f5f4;
+    font-size: 13px;
+    padding: 10px;
+}
+
+.back a,
+.back span {
+    text-decoration: none;
+    color: #a1a0a0;
+    margin-left: 20px;
+}
+
+/* ===== PAGE ===== */
+.checkout-page {
+    background: #f4f6f8;
+    padding: 30px 0;
+}
+
+.checkout-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.checkout-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+/* ===== LAYOUT ===== */
+.checkout-layout {
+    display: flex;
+    gap: 30px;
+}
+
+.checkout-left,
+.checkout-right {
+    flex: 1;
+}
+
+/* ===== SECTION ===== */
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #222;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 8px;
+}
+
+.sub-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+/* ===== FORM ===== */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #444;
+}
+
+.input-text,
+.input-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.input-text:focus,
+.input-textarea:focus {
+    border-color: #ff6f00;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 111, 0, 0.15);
+}
+
+.input-textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.input-disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+
+/* ===== ORDER TABLE ===== */
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.order-table th {
+    background: #fafafa;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px;
+    border-bottom: 2px solid #eee;
+    text-align: left;
+}
+
+.order-table td {
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+}
+
+.product-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.product-qty {
+    text-align: center;
+}
+
+.product-price {
+    text-align: right;
+    color: #e53935;
+    font-weight: 600;
+}
+
+/* ===== VOUCHER ===== */
+.voucher-section {
+    margin-bottom: 20px;
+}
+
+/* ===== PAYMENT ===== */
+.payment-section {
+    margin-bottom: 20px;
+}
+
+.payment-option {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.payment-option input {
+    margin-right: 6px;
+}
+
+/* ===== SUMMARY ===== */
+.order-summary {
+    border-top: 2px dashed #ddd;
+    padding-top: 15px;
+    margin-bottom: 20px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+.summary-total {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+}
+
+/* ===== BUTTON ===== */
+.btn-order {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #ff9800, #ff5722);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-order:hover {
+    background: linear-gradient(135deg, #ff5722, #ff9800);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(255, 87, 34, 0.4);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+    .checkout-layout {
+        flex-direction: column;
+    }
+}
+
+.voucher_container{
+    display: flex;
+
+}
+.voucher_container input{
+    width: 80%;
+}
+.voucher_container button{
+    flex: 1;
+    background: #ecb076;
+    border-radius: 30px;
+    border: none;
+}
+.voucher_container button:hover{
+    background: #FF840B;
+    transition: .3s;
+}

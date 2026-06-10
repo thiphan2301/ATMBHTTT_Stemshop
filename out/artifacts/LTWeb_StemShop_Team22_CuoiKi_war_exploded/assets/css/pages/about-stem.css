@@ -1,0 +1,361 @@
+
+/* ==== SECTION 1: GIỚI THIỆU ==== */
+
+section.stem-intro {
+  position: relative;
+  min-height: 80vh;
+  padding: 80px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* background */
+  background-image:
+          linear-gradient(rgba(82,82,82,0.4), rgba(0,0,0,0.4)),
+          url("../../images/about/bg-stem.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
+
+.stem-intro .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+  background: #fff;
+  padding: 50px;
+  border-radius: 40px;
+  width: 800px;
+  box-shadow: 0 10px 25px rgba(43,43,43,0.2);
+}
+
+/*====BACK====*/
+.back {
+    background-color: #f6f5f4;
+    font-size: 13px;
+    padding: 10px;
+}
+.back a,
+.back span{
+    text-decoration: none;
+    color: #a1a0a0;
+    margin-left: 20px;
+}
+
+
+
+.stem-intro__text h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #222;
+  margin-bottom: 20px;
+}
+
+.stem-intro__text p {
+  font-size: 1rem;
+  color: #555;
+}
+
+.stem-intro__image img {
+  width: 350px;
+  border-radius: 50%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+ 
+}
+
+
+/* ==== SECTION 2A: THÀNH TỰU / COUNTER ==== */
+.stem-achievements {
+  padding: 100px 0;
+  text-align: center;
+  background: linear-gradient(120deg,#fff8f0,#fff);
+}
+
+.stem-achievements h2 {
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+}
+
+.stem-achievements p {
+  color: #555;
+  margin-bottom: 50px;
+}
+
+.achievements-grid {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.achievement-item {
+  flex: 1 1 180px;
+  max-width: 220px;
+  background: #f9f9ff;
+  padding: 30px 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+  transition: 0.3s;
+}
+
+.achievement-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.achievement-item h3 {
+  font-size: 2rem;
+  color: #ff4da6;
+  margin-bottom: 10px;
+}
+
+.achievement-item p {
+  font-size: 1rem;
+  color: #555;
+}
+.achievement-item i {
+    font-size: 2.5rem;
+    color: #ff4da6;
+    margin-bottom: 15px;
+    display: block;
+}
+
+/* ==== SECTION 2B: 4 LĨNH VỰC ==== */
+.stem-core {
+  padding: 100px 0;
+  background-color: #fff9f2;
+  text-align: center;
+}
+
+.stem-core h2 {
+  font-size: 2.2rem;
+  margin-bottom: 50px;
+}
+
+.stem-core__grid {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.core-item {
+  background: #f9f9ff;
+  padding: 40px 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+  transition: 0.3s;
+  flex: 1 1 220px;
+  max-width: 260px;
+}
+
+.core-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.core-item i {
+  font-size: 2.2rem;
+  color: #ff4da6;
+  margin-bottom: 15px;
+}
+
+.core-item h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.core-item p {
+  color: #555;
+}
+
+/* ==== SECTION 3: LỢI ÍCH ==== */
+.stem-benefits {
+  padding: 100px 0;
+  background-color: #faf3f3;
+}
+
+.stem-benefits h2 {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 40px;
+}
+
+.benefits-list {
+  list-style: none;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.benefits-list li {
+  font-size: 1rem;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.benefits-list i {
+  color: #ff4da6;
+}
+
+/* ==== SECTION 4: LỘ TRÌNH ==== */
+.stem-levels {
+  padding: 100px 0;
+  background-color: #fff9f2;
+  text-align: center;
+}
+
+.stem-levels h2 {
+  font-size: 2.2rem;
+  margin-bottom: 50px;
+}
+
+.levels-grid {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.level-card {
+  background: #f9f9ff;
+  padding: 40px 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+  transition: 0.3s;
+  flex: 1 1 220px;
+  max-width: 300px;
+}
+
+.level-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.level-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+}
+
+.level-card p {
+  color: #555;
+  line-height: 1.7;
+}
+
+/* BUTTONS */
+.btn-readmore-guide, .btn-primary {
+  display: inline-block;
+  font-weight: 600;
+  border-radius: 30px;
+  padding: 12px 28px;
+  transition: 0.3s;
+  text-decoration: none;
+  color: #fff;
+  background-color: #ff4da6;
+  margin-top: 20px;
+}
+
+.btn-readmore-guide:hover, .btn-readmore:hover, .btn-primary:hover {
+  background-color: #1c1c1c;
+  transform: translateY(-3px);
+}
+
+.btn-readmore-guide i, .btn-readmore i {
+  margin-left: 8px;
+}
+
+
+/* ==== SECTION 6: SẢN PHẨM ==== */
+.stem-products {
+  padding: 100px 0;
+  text-align: center;
+  background: linear-gradient(120deg,#fff,#fff8fb);
+}
+
+.stem-products h2 {
+  font-size: 2.2rem;
+  margin-bottom: 50px;
+}
+
+.product-grid {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.product-item {
+  flex: 1 1 220px;
+  max-width: 300px;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: 0.3s;
+}
+
+.product-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+.product-item img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.product-item h4 {
+  margin: 15px 0 5px;
+}
+
+.product-item p {
+  font-size: 0.95rem;
+  color: #555;
+  padding: 0 15px 20px;
+}
+.btn-readmore{
+  display: inline-block;
+  font-weight: 600;
+  margin-top: 20px;
+  border-radius: 30px;
+  padding: 12px 28px;
+  transition: 0.3s;
+  text-decoration: none;
+  color: #fff;
+  background-color: #ff4da6;
+}
+/* ==== SECTION 7: CTA CUỐI ==== */
+.stem-cta {
+  padding: 100px 0;
+  text-align: center;
+
+}
+
+.stem-cta h2 {
+  font-size: 2.3rem;
+  margin-bottom: 20px;
+}
+
+.stem-cta p {
+  color: #555;
+  font-size: 1rem;
+  max-width: 700px;
+  margin: 0 auto 30px;
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 900px) {
+  .stem-intro .container {
+    flex-direction: column;
+    text-align: center;
+  }
+  .stem-intro__image { order: -1; margin-bottom: 20px; }
+  .stem-intro__text h1 { font-size: 2rem; }
+  .stem-core__grid, .levels-grid, .achievements-grid, .product-grid { gap: 25px; }
+  .core-item, .level-card, .achievement-item, .product-item { max-width: 90%; }
+}

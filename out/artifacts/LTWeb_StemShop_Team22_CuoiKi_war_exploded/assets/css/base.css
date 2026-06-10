@@ -1,0 +1,60 @@
+
+/* --- BASE --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+
+  font-size: 12px;
+}
+
+/* ------------------------ */
+:root {
+  --font-heading: 'Fredoka', 'Paytone One', sans-serif;
+  --font-body: 'Be Vietnam Pro', 'Poppins', sans-serif;
+  --font-h2: 'Coiny', 'Kanit', sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  color: #333;
+  background-color: #fff;
+  line-height: 1.6;
+}
+
+/* --- HEADING --- */
+/*h1 nên dùng Paytone One sẽ đẹp hơn*/
+h1 {
+  font-family: 'Paytone One', sans-serif;
+  font-size: 2.8rem;
+  color: #2a2a2a;
+  letter-spacing: 0.5px;
+}
+
+h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+h2 {
+  font-family: var(--font-h2);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+
+/* --- TEXT --- */
+p, li, span {
+  font-family: var(--font-body);
+  line-height: 1.6;
+
+}
+
+
+
+
+

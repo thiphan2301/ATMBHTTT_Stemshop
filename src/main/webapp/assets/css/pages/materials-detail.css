@@ -1,0 +1,166 @@
+/*====BACK====*/
+.back {
+    background-color: #f6f5f4;
+    font-size: 13px;
+    padding: 10px;
+}
+.back a,
+.back span{
+    text-decoration: none;
+    color: #a1a0a0;
+    margin-left: 20px;
+}
+.detail {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.detail__title {
+    font-size: 3rem;              
+    font-weight: 800;
+    margin-bottom: 0.8rem;
+    color: #ff4f95;
+}
+
+.detail__meta span {
+    margin-right: 1.5rem;
+    color: #666;
+    font-size: 1.1rem;           
+}
+
+.detail__cover {
+    width: 100%;
+    border-radius: 14px;
+    margin: 1rem 0 2rem 0;
+}
+
+.detail__section {
+    margin-bottom: 3rem;
+}
+
+.detail__section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #ec75ad;
+}
+
+.detail__section p,
+.detail__section ul li {
+    font-size: 1.15rem;          
+    line-height: 1.7;
+}
+
+.detail__section ul {
+    padding-left: 24px;
+}
+
+.code-block {
+    background: #222;
+    color: #0f0;
+    padding: 1.3rem;
+    border-radius: 10px;
+    font-size: 1.05rem;          
+    overflow-x: auto;
+}
+
+/* ========== BÀI VIẾT LIÊN QUAN ========== */
+.related h2 {
+    font-size: 1.9rem;
+    margin-bottom: 1.2rem;
+}
+
+.related__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.related-item {
+    display: flex;
+    gap: 1rem;
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    transition: 0.25s;
+    border: 1px solid #eee;
+}
+
+.related-item:hover {
+    transform: translateX(6px);
+}
+
+.related-item img {
+    width: 110px;               
+    height: 85px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.related-item h4 {
+    font-size: 1.2rem;
+    margin: 0;
+}
+/* ========== MỤC LỤC TỰ ĐỘNG ========== */
+html {
+    scroll-behavior: smooth;
+}
+
+.toc {
+    background: #fff4fa;
+    padding: 12px 16px;          
+    border-left: 4px solid #ff4f95;
+    margin-bottom: 20px;         
+    border-radius: 8px;
+    max-width: 260px;            
+}
+
+.toc h3 {
+    font-size: 1.35rem;         
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: #d84a8f;
+}
+
+.toc ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.toc li {
+    margin: 6px 0;               
+}
+
+.toc a {
+    text-decoration: none;
+    color: #d84a8f;
+    font-size: 1.05rem;          
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.toc a:hover {
+    text-decoration: underline;
+}
+
+/* ========== Cho di động ========== */
+@media (max-width: 768px) {
+    .detail {
+        grid-template-columns: 1fr;
+    }
+
+    .detail__title {
+        font-size: 2.4rem;
+    }
+
+    .detail__section h2 {
+        font-size: 1.7rem;
+    }
+
+    .toc {
+        font-size: 1.1rem;
+    }
+}
+

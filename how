@@ -1,0 +1,21 @@
+[33mcommit d61c8e083e0f05ce29c969b91cf1022a054f73bf[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32m23130382_TruongDinhViet_TTLTW[m[33m)[m
+Author: 23130382-bit <23130382@st.hcmuaf.edu.vn>
+Date:   Wed Apr 1 16:49:42 2026 +0700
+
+    update: thêm các mục phân loại đơn hàng , hàng chờ xác nhận , hàng, hàng đag vận chuyện , hàng đã giao , hàng đc trả về , hàng bị hủy. hiện thị chi tiết đơn hàng . ( còn bổ sung thêm )
+
+[33mcommit cea2b4cdb1cb41122d9012b34ad3a5b3955c6af9[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Merge: 67d63c0 fa4db5b
+Author: thiphan2301 <23130309@st.hcmuaf.edu.vn>
+Date:   Fri Mar 20 13:53:39 2026 +0700
+
+    Merge pull request #6 from thiphan2301/23130309_PhanVanThi_ttltw
+    
+    23130309 phan van thi ttltw
+
+[33mcommit fa4db5bfa073cce7229cd57d24befb9e3a122953[m
+Merge: d99f19e 67d63c0
+Author: Phan Van Thi <23130309@st.hcmuaf.edu.vn>
+Date:   Fri Mar 20 13:49:16 2026 +0700
+
+    cònlict

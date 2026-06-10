@@ -1,0 +1,140 @@
+/* ===== HƯỚNG DẪN SỬ DỤNG ===== */
+.guide-steps {
+  padding: 100px 0;
+  text-align: center;
+}
+
+
+/*====BACK====*/
+.back {
+    background-color: #f6f5f4;
+    font-size: 13px;
+    padding: 10px;
+}
+.back a,
+.back span{
+    text-decoration: none;
+    color: #a1a0a0;
+    margin-left: 20px;
+}
+
+.guide-steps h1 {
+  font-size: 2.2rem;
+  color: #222;
+  margin-bottom: 15px;
+}
+
+.guide-steps p {
+  color: #555;
+  max-width: 700px;
+  margin: 0 auto 40px;
+  line-height: 1.7;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+}
+
+.step-card {
+  background: #fff;
+  padding: 40px 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+  transition: 0.3s;
+}
+
+.step-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+.step-card i {
+  font-size: 2.2rem;
+  color: #0077b6;
+  margin-bottom: 15px;
+}
+
+/* ===== LỢI ÍCH ===== */
+.guide-benefits {
+  background: #f9f9ff;
+  padding: 100px 0;
+  text-align: center;
+}
+
+.guide-benefits h2 {
+  font-size: 2rem;
+  margin-bottom: 50px;
+  color: #222;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+}
+
+.benefit-card {
+  background: #fff;
+  padding: 40px 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+  transition: 0.3s;
+}
+
+.benefit-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+.benefit-card i {
+  font-size: 2rem;
+  color: #0096c7;
+  margin-bottom: 15px;
+}
+
+/* ===== HƯỚNG PHÁT TRIỂN WEB ĐỘNG ===== */
+.guide-future {
+  padding: 100px 0;
+}
+
+.guide-future h2 {
+  font-size: 2rem;
+  color: #222;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.guide-future p {
+  color: #555;
+  line-height: 1.8;
+  max-width: 800px;
+  margin: 0 auto 20px;
+  text-align: center;
+}
+
+.guide-future ul {
+  list-style: none;
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 0;
+}
+
+.guide-future li {
+  margin-bottom: 10px;
+  line-height: 1.7;
+  color: #444;
+}
+
+.guide-future i {
+  color: #00b4d8;
+  margin-right: 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .guide-future p {
+    text-align: justify;
+  }
+}

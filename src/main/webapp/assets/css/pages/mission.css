@@ -1,0 +1,250 @@
+/* ===== SECTION 1: INTRO ===== */
+.mission-intro {
+  padding: 100px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.mission-intro {
+  position: relative;
+  min-height: 80vh;
+  padding: 100px 0;
+
+  background-image:
+          linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+          url("../../images/about/about-mission-1.png");
+
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+
+
+/*====BACK====*/
+.back {
+    background-color: #f6f5f4;
+    font-size: 13px;
+    padding: 10px;
+}
+.back a,
+.back span{
+    text-decoration: none;
+    color: #a1a0a0;
+    margin-left: 20px;
+}
+.mission-intro .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+
+  position: relative;
+  z-index: 1;
+}
+
+
+
+.mission-text {
+  flex: 2;
+  min-width: 300px;
+  text-shadow: 0 10px 25px black;
+}
+
+.mission-text h1 {
+  font-size: 45px;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.mission-text p {
+  color: #ffffff;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.mission-image {
+  flex: 1;
+  text-align: center;
+}
+.mission-image img {
+  width: 100%;
+  max-width: 600px;
+ animation: float 5s ease-in-out infinite;
+}
+/* ====== ANIMATION FLOAT ====== */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+
+/* ===== SECTION 2: CORE VALUES ===== */
+.mission-values {
+  background-color: #fff9f2;
+  text-align: center;
+  padding: 100px 0;
+}
+
+.mission-values h2 {
+  font-size: 25px;
+  margin-bottom: 50px;
+  color: #1f1f1f;
+}
+
+.values-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+.value-card {
+  background: #fff;
+  padding: 40px 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  transition: 0.3s;
+}
+
+.value-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.value-card i {
+  font-size: 2.2rem;
+  color: #0077b6;
+  margin-bottom: 15px;
+}
+
+.value-card h3 {
+  color: #222;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.value-card p {
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ===== SECTION 3: VISION ===== */
+.mission-vision {
+  padding: 100px 0;
+  background-color: #faf3f3;
+  
+}
+
+.mission-vision .container {
+  display: flex;
+  align-items: center;
+
+  gap: 20px;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.vision-content {
+  align-items: center;
+  margin-left: 100px;
+}
+
+.vision-content h2 {
+  font-size: 2rem;
+  color: #222;
+  margin-bottom: 20px;
+}
+
+.vision-content p {
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.vision-content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.vision-content li {
+  color: #444;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.vision-content i {
+  color: #00b4d8;
+  margin-right: 10px;
+}
+
+.vision-image {
+  align-items: center;
+}
+
+.vision-image img {
+  width: 100%;
+  max-width: 500px;
+  
+  margin-right:  150px;
+}
+
+/* ===== SECTION 4: CTA ===== */
+.mission-cta {
+   background-color: #ffffff;
+  color: #000000;
+  text-align: center;
+  padding: 100px 0;
+}
+
+.mission-cta h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.mission-cta p {
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+}
+
+.mission-cta .btn-readmore {
+    display: inline-block;
+    margin-top: 10px;
+    background: #e862ff;
+    color: #ffffff;
+    padding: 15px;
+    border: none;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+
+}
+
+.mission-cta .btn-readmore:hover {
+     background: #222;
+    color: #fff;
+}
+ 
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+
+  .mission-intro .container,
+  .mission-vision .container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .mission-image img,
+  .vision-image img {
+    max-width: 100%;
+  }
+}

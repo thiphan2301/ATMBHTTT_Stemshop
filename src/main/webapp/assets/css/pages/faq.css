@@ -1,0 +1,93 @@
+/*----FAQ PAGE-----*/
+.faq {
+  background: #ffffff;
+  padding: 80px 0;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Container căn giữa */
+.faq .container {
+  width: 80%;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+/*BACK_TO_HOME*/
+
+.back a {
+  border: 1px solid #757575;
+  padding: 15px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: 'Coiny', sans-serif;
+  color: black;
+}
+
+.back a:hover {
+  background-color: #FF6C80;
+  color: white;
+  transition: ease .3s;
+}
+.back a i {
+  margin-right: 5px; 
+}
+
+.back {
+  margin-bottom: 20px;
+
+}
+
+/* Header của FAQ */
+.faq__title {
+  font-size: 30px;
+  text-align: center;
+  color: #222;
+  margin-bottom: 20px;
+}
+
+.faq__intro {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 50px;
+}
+
+/* Danh sách FAQ */
+.faq__item {
+  margin-bottom: 40px;
+  border-left: 4px solid #ffb703;
+  padding-left: 20px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-radius: 8px;
+  padding: 20px;
+ 
+}
+
+
+.faq__question {
+  color: #1d3557;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.faq__answer {
+  color: #444;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+/* Liên kết trong câu trả lời */
+.faq__answer a {
+  color: #e63946;
+  text-decoration: none;
+  font-weight: 900;
+  font-family: 'Coiny', sans-serif  ;
+  
+}
+
+.faq__answer a:hover {
+  text-decoration: underline;
+  
+}

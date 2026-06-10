@@ -1,0 +1,174 @@
+/* Bố cục khung chính */
+.cart-wrapper {
+    max-width: 1100px;
+    width: 95%;
+    margin: 30px auto 60px;
+    font-family: Arial, sans-serif;
+}
+
+/* Breadcrumb */
+.back {
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+.back a { text-decoration: none; color: #888; }
+.back span { margin: 0 10px; color: #ccc; }
+
+/* --- CSS GRID: ĐẢM BẢO CỘT THẲNG TẮP --- */
+.cart-grid-header, .cart-grid-row {
+    display: grid;
+    /* Tỉ lệ cột: Sản phẩm (5 phần) - Số lượng (2 phần) - Giá (2 phần) */
+    grid-template-columns: 5fr 2fr 2fr;
+    align-items: center;
+}
+
+/* Tiêu đề bảng */
+.cart-grid-header {
+    padding: 15px 20px;
+    border-bottom: 2px solid #eaeaea;
+    color: #555;
+    font-weight: bold;
+}
+.cart-grid-header .col-quantity { text-align: center; }
+.cart-grid-header .col-price { text-align: right; }
+
+/* Từng dòng sản phẩm */
+.cart-grid-row {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Cột Sản Phẩm */
+.col-product {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.col-product img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border: 1px solid #eee;
+    border-radius: 6px;
+}
+.product-info .brand-name {
+    font-size: 0.85rem;
+    color: #888;
+    margin: 0 0 5px 0;
+}
+.product-info .product-name {
+    font-size: 1rem;
+    color: #333;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Cột Số Lượng & Nút Xóa */
+.col-quantity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+.qty-control {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+}
+.qty-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+    text-decoration: none;
+    background: #f9f9f9;
+}
+.qty-btn:hover { background: #eee; }
+.qty-value {
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-weight: 500;
+}
+.delete-btn {
+    font-size: 0.9rem;
+    color: #999;
+    text-decoration: none;
+}
+.delete-btn:hover { color: #ee4d2d; }
+
+/* Cột Giá */
+.col-price {
+    text-align: right;
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Khi giỏ hàng trống */
+.empty-cart {
+    text-align: center;
+    padding: 60px 0;
+    color: #aaa;
+}
+.empty-cart i { font-size: 3rem; margin-bottom: 10px; }
+
+/* --- KHU VỰC THANH TOÁN (FOOTER) --- */
+.cart-footer {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 25px;
+}
+.total-section {
+    font-size: 1.2rem;
+    color: #333;
+}
+.total-price {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #ee4d2d; /* Đỏ cam kiểu Shopee */
+    margin-left: 15px;
+}
+
+/* Các nút bấm */
+.action-buttons {
+    display: flex;
+    gap: 15px;
+}
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 25px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+.btn-outline {
+    border: 1px solid #ccc;
+    background: #fff;
+    color: #555;
+}
+.btn-outline:hover { background: #f5f5f5; border-color: #888; }
+
+.btn-solid {
+    background: #ee4d2d;
+    color: #fff;
+    border: 1px solid #ee4d2d;
+}
+.btn-solid:hover { background: #d73a1c; }

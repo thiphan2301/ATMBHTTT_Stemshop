@@ -1,0 +1,122 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.hidetake.ssh' version '2.11.2'
+}
+
+group = 'vn.edu.nlu.fit'
+version = '1.0-SNAPSHOT'
+description = 'ttltweb-Group17-StemShop'
+
+java {
+    sourceCompatibility = '21'
+    targetCompatibility = '21'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    // MySQL Connector
+    implementation 'com.mysql:mysql-connector-j:8.0.33'
+
+    // JSTL for Tomcat 10 (jakarta)
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+
+    // JDBI (database access)
+    implementation 'org.jdbi:jdbi3-core:3.45.1'
+
+    // Jakarta Mail
+    implementation 'com.sun.mail:jakarta.mail:2.0.1'
+    implementation 'com.sun.activation:jakarta.activation:2.0.1'
+
+    // Google API
+    implementation 'com.google.api-client:google-api-client:2.0.0'
+
+    // Apache HttpClient
+    implementation 'org.apache.httpcomponents:fluent-hc:4.5.14'
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // MariaDB Client
+    //implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.0'
+
+    // Servlet API for Tomcat 10
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+
+    // Test
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+
+    // BCrypt - mã hóa mật khẩu
+    implementation 'org.mindrot:jbcrypt:0.4'
+
+    // Thư viện tạo chuỗi hash (HMAC SHA512)
+    implementation 'commons-codec:commons-codec:1.15'
+}
+
+war {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // Đảm bảo include đầy đủ các file class đã biên dịch mới nhất
+    from('build/classes/java/main') {
+        into 'WEB-INF/classes'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+// CẤU HÌNH SSH
+remotes {
+    vps {
+        host = '103.165.144.135'
+        user = 'root'
+        password = '1bCE4bcjZc5px1rHFXtf'
+    }
+}
+
+ssh.settings {
+    knownHosts = allowAnyHosts
+}
+
+//  DEPLOY TO VPS
+task deployToVPS {
+    dependsOn war
+    doLast {
+        println 'Starting deploy to VPS'
+
+        ssh.run {
+            session(remotes.vps) {
+                // Tạo thư mục
+                execute 'mkdir -p /usr/deploy'
+
+                // Xóa war cũ
+                execute 'rm -f /usr/deploy/ROOT.war'
+                println 'Removed old WAR file'
+
+                // Upload war mới
+                def warFile = fileTree(dir: 'build/libs', include: '*.war').singleFile
+                put from: warFile.absolutePath, into: '/usr/deploy/ROOT.war'
+                println "Uploaded: ${warFile.name}"
+
+                // Khởi động Tomcat container
+                execute 'docker stop tomcat11', ignoreError: true
+                execute 'docker rm tomcat11', ignoreError: true
+                execute 'docker run -it --rm -d --name tomcat11 --network my-network -v /usr/deploy:/usr/local/tomcat/webapps -p 8080:8080 tomcat:11.0'
+                println 'Tomcat container started'
+            }
+        }
+
+        println "DEPLOY SUCCESSFUL!"
+        println "Access at: http://${remotes.vps.host}"
+    }
+}

@@ -1,0 +1,61 @@
+main {
+    width: 1000px;
+    margin: auto;
+}
+
+.back a {
+    border: 1px solid #757575;
+    padding: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    color: black;
+}
+.back a:hover {
+    background-color:#FF6C80;
+    color: white;
+    transition: ease .3s;
+}
+.back {
+    margin-bottom: 20px;
+}
+
+/* --------------head------------ */
+.head {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 20px;
+}
+.head p {
+    color: #64748B;
+}
+
+/* ------------------------------------ */
+.warranty {
+    border: 1px solid #cccccc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+.warranty i {
+    color: #EC4699;
+}
+.warranty ul, .warranty ol {
+    margin-left: 20px;
+   padding: 4px 30px;
+}
+.warranty ul li, .warranty ol li {
+    color: #64748B;
+}
+
+.non-warranty-cases  h3 {
+    color: #EF4444;
+}
+
+.contact-support p span {
+    color: #EC52BA;
+}
+.contact-support p:nth-child(4) span{
+    color: #64748B;
+}

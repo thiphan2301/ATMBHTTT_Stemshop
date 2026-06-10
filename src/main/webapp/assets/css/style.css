@@ -1,0 +1,218 @@
+/*----- 1. IMPORT CƠ BẢN -----*/
+@import url(base.css);
+@import url(fonts/fonts.css);
+@import url(layout/header.css);
+@import url(layout/footer.css);
+@import url(layout/container.css);
+@import url(components.css);
+
+/*----- 2. BIẾN MÀU SẮC & CHUNG -----*/
+:root {
+    --primary-color: #007bff;
+    --accent-color: #ee4d2d;
+    --border-light: #eee;
+    --border-dark: #ddd;
+    --text-muted: #888;
+}
+
+/*----- 3. THANH TABS (LỌC) -----*/
+.order-tabs {
+    display: flex;
+    background: #fff;
+    margin: 0 auto 30px auto;
+    border-bottom: 2px solid var(--border-light);
+    max-width: 900px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none; /* Firefox */
+}
+
+.order-tabs::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 15px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    color: #555;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.tab-btn:hover { color: var(--primary-color); }
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
+    font-weight: bold;
+}
+
+/*----- 4. KHUNG ĐƠN HÀNG (ORDER BOX) -----*/
+.order-box {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    border: 1px solid var(--border-dark);
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+}
+
+.order-status {
+    font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+/* Màu trạng thái cụ thể */
+.order-status.PENDING { color: #ff9800; background: #fff3e0; }
+.order-status.CONFIRMED { color: #2e7d32; background: #e8f5e9; }
+.order-status.CANCELLED { color: #dc3545; background: #fde8e8; }
+/* Mặc định cho các trạng thái khác */
+.order-status:not([class*=" "]) { color: var(--accent-color); background: #fff1f0; }
+
+/*----- 5. CHI TIẾT SẢN PHẨM TRONG ĐƠN -----*/
+.product-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 0;
+}
+
+.product-item img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+}
+
+.product-info {
+    flex-grow: 1;
+}
+
+.product-info p { margin: 4px 0; }
+
+/*----- 6. NÚT HÀNH ĐỘNG -----*/
+.order-actions {
+    margin-top: 15px;
+    text-align: right;
+    border-top: 1px dashed var(--border-dark);
+    padding-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 8px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
+    transition: opacity 0.3s;
+}
+.action-btn:hover { opacity: 0.8; }
+
+.btn-blue  { background: var(--primary-color); color: #fff; }
+.btn-red   { background: #dc3545; color: #fff; }
+.btn-green { background: #28a745; color: #fff; }
+.btn-gray  { background: #6c757d; color: #fff; }
+
+/*----- 7. MODAL (POPUP CHI TIẾT) -----*/
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    position: relative;
+    margin: 2% auto;
+    width: 90%;
+    max-width: 700px;
+    height: 85vh;
+    border-radius: 12px;
+    overflow: hidden;
+    animation: slideDown 0.3s ease-out;
+    background: #fff;
+}
+
+#detailFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: #888;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1000;
+    transition: color 0.2s;
+}
+
+.close-btn:hover { color: var(--accent-color); }
+
+@keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/*----- 8. KHÁC -----*/
+#empty-filter-msg {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 50px 0;
+    display: none;
+}
+
+/* CSS cho ảnh sản phẩm có thể click */
+.product-img-link {
+    display: block;
+    transition: opacity 0.3s ease;
+}
+
+.product-img-link:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+/* CSS cho tên sản phẩm có thể click */
+.product-name-link {
+    color: #333;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.product-name-link:hover {
+    color: #ee4d2d; /* Đổi sang màu cam/đỏ đặc trưng của web khi hover */
+    text-decoration: underline; /* Thêm gạch chân khi hover cho rõ ràng */
+    cursor: pointer;
+}
