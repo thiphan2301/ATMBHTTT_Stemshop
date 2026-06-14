@@ -159,6 +159,28 @@ public class CheckoutServlet extends HttpServlet {
 
             // Đặt hàng
             if ("order".equals(action)) {
+                // Kiểm tra số điện thoại có hợp lệ không
+                if(receiverPhone == null || receiverPhone.isEmpty() || !receiverPhone.matches("^0\\d{9}$")){
+                    req.setAttribute("error", "Số điện thoại phải bắt đầu bằng 0 và có 10 số!");
+                    req.setAttribute("isErrorPage", true);
+
+                    // Giữ lại các trường dữ liệu đã nhập trừ số điện thoại
+                    req.setAttribute("receiverName", receiverName);
+                    req.setAttribute("receiverPhone", "");
+                    req.setAttribute("address", address);
+                    req.setAttribute("city", city);
+                    req.setAttribute("note", note);
+
+                    req.setAttribute("cart", cart);
+                    req.setAttribute("subTotal", subTotal);
+                    req.setAttribute("productDiscount", finalProductDiscount);
+                    req.setAttribute("finalShippingFee", finalShippingFee);
+                    req.setAttribute("finalTotalAmount", finalTotalAmount);
+
+                    req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
+                    return;
+                }
+
                 String paymentMethod = req.getParameter("paymentMethod");
                 int paymentMethodId = "VNPAY".equals(paymentMethod) ? 2 : 1;
                 String paymentStatus = "COD".equals(paymentMethod) ? "unpaid" : "pending";

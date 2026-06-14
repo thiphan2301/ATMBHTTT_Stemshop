@@ -78,16 +78,15 @@ public class ProductImageDAO {
     }
 
     //thêm ảnh
-    public void insertImage(int productId, String imageUrl) {
-        String sql = "INSERT INTO product_image (ProductID, ImageURL) VALUES (?, ?)";
+    public void insertImage(int productId, String imageUrl, int isMain) {
+        String sql = "INSERT INTO product_image (ProductID, ImageURL, is_main) VALUES (?, ?, ?)";
 
         try (Connection con = ConnectionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-
             ps.setInt(1, productId);
             ps.setString(2, imageUrl);
+            ps.setInt(3, isMain);
             ps.executeUpdate();
-
         } catch (Exception e) {
             e.printStackTrace();
         }

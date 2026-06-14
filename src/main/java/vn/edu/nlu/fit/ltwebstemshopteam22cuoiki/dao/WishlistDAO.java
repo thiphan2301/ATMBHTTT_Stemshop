@@ -82,7 +82,7 @@ public class WishlistDAO {
         List<Product> list = new ArrayList<>();
 
         String sql =
-                "SELECT p.ID, p.ProductName, p.Price, pi.ImageURL " +
+                "SELECT p.ID, p.ProductName, p.Price, MAX(pi.ImageURL) AS ImageURL " +
                         "FROM wishlists w " +
                         "JOIN products p ON w.ProductID = p.ID " +
                         "LEFT JOIN product_image pi ON p.ID = pi.ProductID " +

@@ -31,6 +31,13 @@
 
                 <h2 class="checkout-title">Thanh toán đơn hàng</h2>
 
+                <!--Thêm hiển thị lỗi-->
+                <c:if test="${not empty error}">
+                    <div style="color: white; background-color: #f44336; padding: 12px; margin-bottom: 20px; border-radius: 4px; font-weight: bold; text-align: center;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> ${error}
+                    </div>
+                </c:if>
+
                 <form class="checkout-form"
                       action="${pageContext.request.contextPath}/checkout"
                       method="post">
@@ -47,7 +54,7 @@
                                 <input id="receiverName"
                                        name="receiverName"
                                        class="input-text"
-                                       value="${not empty receiverName ? receiverName : user.fullName}"
+                                       value="${isErrorPage? receiverName : (not empty receiverName? receiverName : user.fullName)}"
                                        required>
                             </div>
 
@@ -56,9 +63,13 @@
                                 <input id="receiverPhone"
                                        name="receiverPhone"
                                        class="input-text"
-                                       value="${not empty receiverPhone ? receiverPhone : user.phoneNumber}"
+                                       value="${isErrorPage? receiverPhone: (not empty receiverPhone ? receiverPhone : user.phoneNumber)}"
                                        placeholder="0123456789"
-                                       required>
+                                       required
+                                       pattern="^0\d{9}$"
+                                       autocomplete="off"
+                                       oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                                       title="Số điện thoại bắt đầu bằng 0 và có 10 số">
                             </div>
 
                             <div class="form-group">
@@ -74,7 +85,7 @@
                                 <input id="address"
                                        name="address"
                                        class="input-text"
-                                       value="${not empty address ? address : user.address}"
+                                       value="${isErrorPage? address: (not empty address ? address : user.address)}"
                                        plaveholder="Tên đường, số nhà"
                                        required>
                             </div>

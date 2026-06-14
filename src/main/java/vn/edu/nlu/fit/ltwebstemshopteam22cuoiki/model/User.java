@@ -1,6 +1,7 @@
 package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class User {
     private int id;
@@ -18,13 +19,15 @@ public class User {
     private String avatar;
     private String gender;
     private Date birthday;
-    private Date tokenExpiry;
+    private Timestamp tokenExpiry;
     private String oauthProvider;
+    private String pendingEmail;
+    private Timestamp lastPhoneUpdate;
 
     public User() {
     }
 
-    public User(int id, String fullName, String email, String phoneNumber, String address, String role, String status, String userName, String password, Date createDate, String verifyToken, boolean isVerified, String avatar, String gender, Date birthday, Date tokenExpiry, String oauthProvider) {
+    public User(int id, String fullName, String email, String phoneNumber, String address, String role, String status, String userName, String password, Date createDate, String verifyToken, boolean isVerified, String avatar, String gender, Date birthday, Timestamp tokenExpiry, String oauthProvider, String pendingEmail, Timestamp lastPhoneUpdate) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -42,6 +45,7 @@ public class User {
         this.birthday = birthday;
         this.tokenExpiry = tokenExpiry;
         this.oauthProvider = oauthProvider;
+        this.pendingEmail = pendingEmail;
     }
 
     public int getId() {
@@ -145,11 +149,11 @@ public class User {
 
     public void setBirthday(Date birthday) { this.birthday = birthday; }
 
-    public Date getTokenExpiry() {
+    public Timestamp getTokenExpiry() {
         return tokenExpiry;
     }
 
-    public void setTokenExpiry(Date tokenExpiry) {
+    public void setTokenExpiry(Timestamp tokenExpiry) {
         this.tokenExpiry = tokenExpiry;
     }
 
@@ -159,5 +163,21 @@ public class User {
 
     public void setOauthProvider(String oauthProvider) {
         this.oauthProvider = oauthProvider;
+    }
+
+    public String getPendingEmail() {
+        return pendingEmail;
+    }
+
+    public void setPendingEmail(String pendingEmail) {
+        this.pendingEmail = pendingEmail;
+    }
+
+    public Timestamp getLastPhoneUpdate() {
+        return lastPhoneUpdate;
+    }
+
+    public void setLastPhoneUpdate(Timestamp lastPhoneUpdate) {
+        this.lastPhoneUpdate = lastPhoneUpdate;
     }
 }

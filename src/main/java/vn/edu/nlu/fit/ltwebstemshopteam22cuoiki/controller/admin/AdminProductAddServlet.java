@@ -64,30 +64,76 @@ public class AdminProductAddServlet extends HttpServlet {
 
         // Insert product
         int productId = productDAO.insertProduct(product);
+
+        // Nếu insert thất bại
         if (productId <= 0) {
+            request.getSession().setAttribute("error", "Thêm sản phẩm thất bại! Vui lòng thử lại.");
             response.sendRedirect(request.getContextPath() + "/admin/admin-products");
             return;
         }
 
-        // Upload nhiều ảnh
-        String uploadPath = getServletContext().getRealPath("") + "assets/images/products";
+        // Upload nhiều ảnh vào thư mục riêng
+        // Đường dẫn lưu ảnh (máy cá nhân hoặc trên VPS)
+        // Lấy tên hệ điều hành đang chạy ứng dụng
+        String os = System.getProperty("os.name").toLowerCase();
+        String uploadPath;
+        // Tạo tên thư mục theo định dạng: ID-TenSanPhamKhongDau
+        String folderName = productId + "-" + createFolderName(product.getProductName());
+
+        // Tự động rẽ nhánh đường dẫn theo môi trường
+        if (os.contains("win")) {
+            // Cấu hình chạy trên máy cá nhân của bạn (Windows)
+            uploadPath = "E:/StemShop_Images/product-detail/" + folderName;
+        } else {
+            // Cấu hình chạy trên máy chủ VPS thực tế (Linux Ubuntu)
+            uploadPath = "/var/www/stemshop_uploads/product-detail/" + folderName;
+        }
+
+        // Tiến hành tạo thư mục vật lý trên ổ cứng
         File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) uploadDir.mkdirs();
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
+        boolean isFirst = true;
+        int count = 1; // Khởi tạo biến đếm ảnh (1, 2, 3...)
 
         for (Part part : request.getParts()) {
-            if (part.getName().equals("productImages") && part.getSize() > 0) {
+            if ("productImages".equals(part.getName()) && part.getSize() > 0) {
 
-                String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-                String newFileName = "product_" + productId + "_" + System.currentTimeMillis()
-                        + fileName.substring(fileName.lastIndexOf("."));
+                String original = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+                String ext = original.contains(".") ? original.substring(original.lastIndexOf(".")) : "";
 
+                // Đặt tên file là: 1_16812345.jpg, 2_16812346.jpg
+                String newFileName = count + "_" + System.currentTimeMillis() + ext;
+
+                // Lưu vật lý
                 part.write(uploadPath + File.separator + newFileName);
 
-                String imageUrl = "/assets/images/products/" + newFileName;
-                productImageDAO.insertImage(productId, imageUrl);
+                // Đường dẫn lưu DB chuẩn với foder riêng
+                String imageUrl = "assets/images/product-detail/" + folderName + "/" + newFileName;
+
+                productImageDAO.insertImage(productId, imageUrl, isFirst ? 1 : 0);
+
+                isFirst = false;
+                count++; // Tăng số thứ tự cho ảnh tiếp theo
             }
         }
 
+        //  thêm sp thành công thì gán thông báo và chuyển trang
+        request.getSession().setAttribute("message", "Thêm sản phẩm thành công!");
         response.sendRedirect(request.getContextPath() + "/admin/admin-products");
+    }
+
+    // Hàm hỗ trợ bỏ dấu tiếng việt và khoảng trắng (để tạo tên thư mục lưu ảnh sp)
+    private String createFolderName(String productName) {
+        try {
+            String temp = java.text.Normalizer.normalize(productName, java.text.Normalizer.Form.NFD);
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+            // Xóa dấu tiếng Việt, xóa khoảng trắng và các ký tự đặc biệt
+            return pattern.matcher(temp).replaceAll("").replaceAll("[^a-zA-Z0-9]", "");
+        } catch (Exception e) {
+            return "Product"; // Tên mặc định nếu lỗi
+        }
     }
 }

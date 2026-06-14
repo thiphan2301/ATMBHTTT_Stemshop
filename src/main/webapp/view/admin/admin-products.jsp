@@ -151,13 +151,28 @@
                     <i class="fas fa-plus"></i> Thêm sản phẩm mới
                 </a>
             </div>
+<%--            Thông báo--%>
+            <div style="margin-top: 20px;">
+                <c:if test="${not empty sessionScope.message}">
+                    <div style="padding: 12px 20px; background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; border-radius: 8px; font-weight: 500; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-circle-check"></i> ${sessionScope.message}
+                    </div>
+                    <c:remove var="message" scope="session" />
+                </c:if>
+
+                <c:if test="${not empty sessionScope.error}">
+                    <div style="padding: 12px 20px; background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; border-radius: 8px; font-weight: 500; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-circle-exclamation"></i> ${sessionScope.error}
+                    </div>
+                    <c:remove var="error" scope="session" />
+                </c:if>
+            </div>
 
             <!-- Bảng sản phẩm -->
             <table class="admin-table">
                 <thead>
                 <tr>
                     <th>ID</th>
-<%--                    <th>Hình ảnh</th>--%>
                     <th>Tên sản phẩm</th>
                     <th>Thương hiệu</th>
                     <th>Giá</th>

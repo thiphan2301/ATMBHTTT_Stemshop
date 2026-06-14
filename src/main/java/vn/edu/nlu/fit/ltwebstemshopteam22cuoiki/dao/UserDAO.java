@@ -275,7 +275,8 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
-    //Cập nhật trạng thái tài khoản (ACTIVE/LOCKED)
+
+    // Admin cập nhật trạng thái tài khoản của người dùng (ACTIVE/LOCKED)
     public boolean updateUserStatus(int userId, String nextStatus) {
         String sql = "UPDATE users SET Status=? WHERE ID=?";
         try (Connection conn = ConnectionDB.getConnection();
@@ -291,6 +292,31 @@ public class UserDAO {
         }
         return false;
     }
+
+    // Admin chỉnh sửa thông tin của người dùng. Có thể chỉnh sửa gồm:
+    // Họ tên, Username, Email, Số điện thoại, Địa chỉ, Vai trò, Trạng thái
+    public boolean adminEditUser(User user){
+        String sql = "UPDATE users SET FullName=?, UserName=?, Email=?, PhoneNumber=?, Address=?, Role=?, Status=? WHERE ID=?";
+        try (Connection conn= ConnectionDB.getConnection();
+            PreparedStatement ps= conn.prepareStatement(sql)){
+
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getUserName());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getPhoneNumber());
+            ps.setString(5, user.getAddress());
+            ps.setString(6, user.getRole());
+            ps.setString(7, user.getStatus());
+            ps.setInt(8, user.getId());
+
+            return ps.executeUpdate()>0;
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return  false;
+    }
+
 
 
 
@@ -350,18 +376,25 @@ public class UserDAO {
 
     // update profile
     public boolean updateProfile(User user) {
-        String sql = "UPDATE users SET FullName = ?, PhoneNumber = ?, gender = ?, birthday = ?, avatar = ?, Address = ? WHERE id=?";
+        String query = "UPDATE users SET FullName = ?, PhoneNumber = ?, Gender = ?, Address = ?, birthday = ?, avatar = ?, last_phone_update = ? WHERE ID = ?";
 
-        try (Connection con = ConnectionDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getPhoneNumber());
             ps.setString(3, user.getGender());
-            ps.setDate(4, user.getBirthday());
-            ps.setString(5, user.getAvatar());
-            ps.setString(6, user.getAddress());
-            ps.setInt(7, user.getId());
+            ps.setString(4, user.getAddress());
+            ps.setDate(5, user.getBirthday());
+            ps.setString(6, user.getAvatar());
+
+            // Lưu thời gian đổi số điện thoại xuống DB
+            if (user.getLastPhoneUpdate() != null) {
+                ps.setTimestamp(7, user.getLastPhoneUpdate());
+            } else {
+                ps.setNull(7, java.sql.Types.TIMESTAMP);
+            }
+            ps.setInt(8, user.getId());
 
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -419,5 +452,90 @@ public class UserDAO {
             }
         } catch (Exception e) { e.printStackTrace(); }
         return null;
+    }
+
+    // check sdt đã có người đang sử dụng chưa
+    public boolean checkPhoneExist(String phone) {
+        // Thay 'users' bằng tên bảng của bạn nếu khác (vd: user, taikhoan...)
+        String query = "SELECT COUNT(*) FROM users WHERE PhoneNumber = ?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, phone);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Nếu COUNT > 0 nghĩa là đã có người dùng
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    //check email có người sử dụng chưa
+    public boolean checkEmailExist(String email) {
+        String query = "SELECT COUNT(*) FROM users WHERE Email = ?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Nếu lớn hơn 0 nghĩa là email đã có người xài
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Lưu tạm email mới và token vào bảng users
+    public void savePendingEmail(int userId, String pendingEmail, String token, java.sql.Timestamp expiryTime) {
+        String query = "UPDATE users SET pending_email = ?, VerifyToken = ?, token_expiry = ? WHERE ID = ?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, pendingEmail);
+            ps.setString(2, token);
+            ps.setTimestamp(3, expiryTime);
+            ps.setInt(4, userId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //Tìm user dựa vào token
+    public User getUserByVerifyToken(String token) {
+        String query = "SELECT * FROM users WHERE VerifyToken = ?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, token);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("ID"));
+                    user.setEmail(rs.getString("Email"));
+                    user.setPendingEmail(rs.getString("pending_email"));
+                    user.setTokenExpiry(rs.getTimestamp("token_expiry"));
+                    return user;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    // Cập nhật lại email mới thay đổi
+    public void confirmEmailChange(int userId, String newEmail) {
+        // Đưa pending_email vào cột Email chính, sau đó dọn sạch 3 cột tạm
+        String query = "UPDATE users SET Email = ?, pending_email = NULL, VerifyToken = NULL, token_expiry = NULL WHERE ID = ?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, newEmail);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

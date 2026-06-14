@@ -43,15 +43,6 @@ public class AdminProductEditServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-/*       //check ở filterAdmin
-
-        HttpSession session = request.getSession();
-        User admin = (User) session.getAttribute("user");
-
-        if (admin == null || !"admin".equals(admin.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/dang-nhap");
-            return;
-        }*/
 
         try {
             int id = Integer.parseInt(request.getParameter("id"));
@@ -95,68 +86,89 @@ public class AdminProductEditServlet extends HttpServlet {
             product.setCategoriesID(Integer.parseInt(request.getParameter("categoryID")));
             product.setBrandID(Integer.parseInt(request.getParameter("brandID")));
 
-            // đỏi lại cho upload nhiều ảnh
-/*            // Xử lý upload ảnh
-            Part filePart = request.getPart("productImage");
-            if (filePart != null && filePart.getSize() > 0) {
-                String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            // Kiểm tra xem người dùng có chọn ảnh mới hay không
+            boolean hasNewImages = false;
+            for (Part part : request.getParts()) {
+                if ("productImages".equals(part.getName()) && part.getSize() > 0) {
+                    hasNewImages = true;
+                    break;
+                }
+            }
 
-                // Tạo tên file unique
-                String timestamp = String.valueOf(System.currentTimeMillis());
-                String extension = fileName.substring(fileName.lastIndexOf("."));
-                String newFileName = "product_" + productId + "_" + timestamp + extension;
+            // Nếu có ảnh mới thì xóa cũ - thêm mới
+            if (hasNewImages) {
+                // Xóa ảnh DB cũ
+                productImageDAO.deleteAllByProductId(productId);
 
-                // Đường dẫn lưu file
-                String uploadPath = getServletContext().getRealPath("") + "assets/images/products";
+                // Lấy tên hệ điều hành đang chạy ứng dụng
+                String os = System.getProperty("os.name").toLowerCase();
+                String uploadPath;
+                // Tạo tên thư mục chứa ảnh sp
+                String folderName = productId + "-" + createFolderName(product.getProductName());
+
+                // Tự động rẽ nhánh đường dẫn theo môi trường
+                if (os.contains("win")) {
+                    // Cấu hình chạy trên máy cá nhân của bạn (Windows)
+                    uploadPath = "E:/StemShop_Images/product-detail/" + folderName;
+                } else {
+                    // Cấu hình chạy trên máy chủ VPS thực tế (Linux Ubuntu)
+                    uploadPath = "/var/www/stemshop_uploads/product-detail/" + folderName;
+                }
+
+                // Tiến hành tạo thư mục vật lý trên ổ cứng
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();
                 }
 
-                // Lưu file
-                String filePath = uploadPath + File.separator + newFileName;
-                filePart.write(filePath);
+                boolean isFirst = true; //  chọn ảnh đầu làm ảnh chính
+                int count = 1; // Khởi tạo biến đếm
 
-                // Đường dẫn để lưu vào DB
-                String imageUrl = "/assets/images/products/" + newFileName;
+                for (Part part : request.getParts()) {
+                    if ("productImages".equals(part.getName()) && part.getSize() > 0) {
+                        String original = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+                        String ext = original.contains(".") ? original.substring(original.lastIndexOf(".")) : "";
 
-                // Cập nhật hoặc thêm ảnh vào product_image
-                productImageDAO.updateOrAddProductImage(productId, imageUrl);
-            }*/
-            List<Part> imageParts = request.getParts().stream()
-                    .filter(p -> "productImages".equals(p.getName()) && p.getSize() > 0)
-                    .toList();
+                        // Đặt tên file: 1_16812345.jpg
+                        String fileName = count + "_" + System.currentTimeMillis() + ext;
 
-            if (!imageParts.isEmpty()) {
+                        // Lưu file vào ổ cứng
+                        part.write(uploadPath + File.separator + fileName);
 
-                // XÓA TẤT CẢ ẢNH CŨ TRONG DB
-                productImageDAO.deleteAllByProductId(productId);
+                        // Lưu vào Database
+                        String imageUrl = "assets/images/product-detail/" + folderName + "/" + fileName;
+                        productImageDAO.insertImage(productId, imageUrl, isFirst ? 1 : 0);
 
-                // LƯU ẢNH MỚI
-                String uploadPath = getServletContext().getRealPath("") + "assets/images/products";
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()) uploadDir.mkdirs();
-
-                for (Part part : imageParts) {
-                    String original = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-                    String ext = original.substring(original.lastIndexOf("."));
-                    String fileName = "product_" + productId + "_" + System.currentTimeMillis() + ext;
-
-                    part.write(uploadPath + File.separator + fileName);
-
-                    String imageUrl = "/assets/images/products/" + fileName;
-                    productImageDAO.insertImage(productId, imageUrl);
+                        isFirst = false; // Các ảnh sau sẽ là 0 (ảnh phụ)
+                        count++;
+                    }
                 }
             }
 
-            // Cập nhật thông tin sản phẩm
+            // Cập nhật thông tin của sản phẩm
             productDAO.updateProduct(product);
 
+            // nếu cập nhật thành công, lưu thông báo đó vào session để hiển thị ra view
+            request.getSession().setAttribute("message", "Cập nhật sản phẩm thành công!");
             response.sendRedirect(request.getContextPath() + "/admin/admin-products");
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Có lỗi xảy ra: " + e.getMessage());
+            // Nếu có lỗi, lưu thông báo lỗi vào session và hiển thị ra view
+            request.getSession().setAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/admin/admin-products");
+        }
+    }
+
+    // Hàm hỗ trợ bỏ dấu tiếng việt và khoảng trắng (để tạo tên thư mục lưu ảnh sp)
+    private String createFolderName(String productName) {
+        try {
+            String temp = java.text.Normalizer.normalize(productName, java.text.Normalizer.Form.NFD);
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+            // Xóa dấu tiếng Việt, xóa khoảng trắng và các ký tự đặc biệt
+            return pattern.matcher(temp).replaceAll("").replaceAll("[^a-zA-Z0-9]", "");
+        } catch (Exception e) {
+            return "Product"; // Tên mặc định nếu lỗi
         }
     }
 }

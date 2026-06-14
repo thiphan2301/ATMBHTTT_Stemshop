@@ -207,7 +207,11 @@
 
         <div class="form-group">
           <label>Số điện thoại</label>
-          <input type="tel" name="phoneNumber" class="form-control" value="${user.phoneNumber}" placeholder="Nhập số điện thoại">
+          <input type="tel" name="phoneNumber" class="form-control" value="${user.phoneNumber}"
+                 placeholder="Nhập số điện thoại"
+                 required
+                 pattern="^0\d{9}$"
+                 title="Số điện thoại gồm 10 số và bắt đầu bằng số 0">
         </div>
 
         <div class="form-group full-width">

@@ -41,7 +41,7 @@
                 <a href="https://maps.app.goo.gl/nj1KfxS8ajpDxTni6" target="_blank">
                     <span><i class="fa-solid fa-location-dot"></i> Trường Đại Học Nông Lâm TPHCM</span>
                 </a>
-                <a href=""><span><i class="fa-solid fa-envelope"></i> stemshop.system@gmail.com</span></a>
+                <a href="mailto:stemshop.system@gmail.com"><span><i class="fa-solid fa-envelope"></i> stemshop.system@gmail.com</span></a>
             </div>
             <div class="header__top-right">
                 <div class="header__phone-top">

@@ -110,7 +110,7 @@
         <div class="container">
             <h2>Chung tay xây dựng thế hệ sáng tạo Việt Nam</h2>
             <p>Tham gia cùng STEMSHOP để mang STEM đến với mọi lớp học, mọi gia đình.</p>
-            <a href="${pageContext.request.contextPath}/view/main/contact.html" class="btn-readmore">
+            <a href="${pageContext.request.contextPath}/view/main/contact.jsp" class="btn-readmore">
                 Liên hệ hợp tác <i class="fa-solid fa-arrow-right"></i>
             </a>
         </div>

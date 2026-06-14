@@ -38,8 +38,7 @@
       <ul>
         <li><a href="${pageContext.request.contextPath}/">Trang chủ</a></li>
         <li><a href="${pageContext.request.contextPath}/view/main/about.jsp">Giới thiệu</a></li>
-        <li><a href="${pageContext.request.contextPath}/view/shop/shop.jsp">Cửa hàng</a></li>
-        <li><a href="${pageContext.request.contextPath}/view/content/blog.jsp">Bài viết</a></li>
+        <li><a href="${pageContext.request.contextPath}/shop">Cửa hàng</a></li>
         <li><a href="${pageContext.request.contextPath}/view/main/contact.jsp">Liên hệ</a></li>
       </ul>
     </div>
@@ -58,7 +57,7 @@
     <div class="footer__col footer__contact">
       <h3>Liên hệ</h3>
       <p><i class="fa-solid fa-location-dot"></i> Trường Đại học Nông Lâm TP.HCM</p>
-      <p><i class="fa-solid fa-envelope"></i> shopstemteam22@gmail.com</p>
+      <p><i class="fa-solid fa-envelope"></i> stemshop.system@gmail.com</p>
       <p><i class="fa-solid fa-phone"></i> +84 123 456 789</p>
     </div>
 
@@ -75,7 +74,7 @@
   </div>
 
   <div class="footer__bottom">
-    <p>© 2025 STEMSHOP - Nhóm 22 | All rights reserved.</p>
+    <p>© 2025 STEMSHOP | All rights reserved.</p>
   </div>
 
 </footer>

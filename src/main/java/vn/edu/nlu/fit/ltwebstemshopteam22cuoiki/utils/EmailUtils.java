@@ -222,4 +222,46 @@ public class EmailUtils {
         }
     }
 
+    /**
+     * Gửi email HTML tổng quát
+     * @param toEmail Email người nhận
+     * @param subject Tiêu đề email
+     * @param htmlContent Nội dung email (có thể chứa thẻ HTML)
+     */
+    public static boolean sendHtmlEmail(String toEmail, String subject, String htmlContent) {
+        try {
+            // Cấu hình SMTP
+            Properties props = new Properties();
+            props.put("mail.smtp.host", emailConfig.getProperty("mail.smtp.host"));
+            props.put("mail.smtp.port", emailConfig.getProperty("mail.smtp.port"));
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+
+            Session session = Session.getInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(
+                            emailConfig.getProperty("mail.from"),
+                            emailConfig.getProperty("mail.password")
+                    );
+                }
+            });
+
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(emailConfig.getProperty("mail.from")));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+            message.setSubject(subject);
+            message.setContent(htmlContent, "text/html; charset=UTF-8");
+
+            Transport.send(message);
+            System.out.println("Email đã gửi thành công tới: " + toEmail);
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Lỗi gửi email: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

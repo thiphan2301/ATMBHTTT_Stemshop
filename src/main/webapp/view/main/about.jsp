@@ -148,52 +148,8 @@
     </section>
 
 
-
-
-    <!-- SECTION: ABOUT GROUP -->
-    <section class="section__about-group">
-        <div class="group-container">
-            <h2>Nhóm Phát Triển</h2>
-            <p>Những người đứng sau hành trình mang STEM đến với mọi trẻ em Việt Nam.</p>
-
-            <div class="team-grid">
-                <div class="team-card">
-
-                    <img src="../../assets/images/about/user-male-circle.jpg" alt="Thành viên nhóm 1">
-                    <h3>Lê Quang Trường</h3>
-                    <p>MSSV: 23130355</p>
-
-                    <p>Software Developer</p>
-                </div>
-
-                <div class="team-card">
-
-                    <img src="../../assets/images/about/user-male-circle.jpg" alt="Thành viên nhóm 2">
-                    <h3>Phan Văn Thi</h3>
-                    <p>MSSV: 23130309</p>
-
-                    <p>Software Developer</p>
-                </div>
-
-                <div class="team-card">
-
-                    <img src="../../assets/images/about/user-male-circle.jpg" alt="Thành viên nhóm 3">
-                    <h3>Nguyễn Thanh Tuấn</h3>
-                    <p>MSSV: 20130456</p>
-
-                    <p>Software Developer</p>
-                </div>
-            </div>
-
-            <div class="group-btn">
-                <a href="${pageContext.request.contextPath}/view/about_info/about-group.jsp" class="btn-readmore">
-                    CHI TIẾT VỀ NHÓM <i class="fa-solid fa-arrow-right-long"></i>
-                </a>
-            </div>
-        </div>
-    </section>
     <div class="back-to-top">
-        <img src="../../assets/images/shop/back-to-top.png" alt="back-to-top">
+        <img src="../../assets/images/back-to-top.png" alt="back-to-top">
     </div>
 </main>
 

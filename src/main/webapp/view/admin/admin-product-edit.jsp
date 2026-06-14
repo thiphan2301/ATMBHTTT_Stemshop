@@ -160,12 +160,24 @@
                 <div class="form-group full">
                     <label>Ảnh hiện tại</label>
                     <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <c:if test="${not empty product.imageUrl}">
+                            <div style="position:relative;">
+                                <img src="${pageContext.request.contextPath}/${product.imageUrl}"
+                                     style="width:120px;height:120px;object-fit:cover;border-radius:8px; border: 3px solid #ff69a8;" title="Ảnh chính">
+                                <span style="position:absolute; top:-10px; left:5px; background:#ff69a8; color:white; font-size:11px; padding:2px 6px; border-radius:4px;">Main</span>
+                            </div>
+                        </c:if>
+
                         <c:forEach var="img" items="${images}">
                             <div style="position:relative;">
                                 <img src="${pageContext.request.contextPath}/${img}"
-                                     style="width:120px;height:120px;object-fit:cover;border-radius:8px">
+                                     style="width:120px;height:120px;object-fit:cover;border-radius:8px; border: 1px solid #ddd;">
                             </div>
                         </c:forEach>
+
+                        <c:if test="${empty product.imageUrl && empty images}">
+                            <small style="color: #999;">Chưa có hình ảnh nào được tải lên.</small>
+                        </c:if>
                     </div>
                 </div>
 
