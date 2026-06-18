@@ -19,6 +19,7 @@
         <entry key="file://$PROJECT_DIR$/src/main/webapp/view/shop/cart.jsp" value="file://$PROJECT_DIR$/src/main/webapp/view/shop" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/view/shop/checkout.jsp" value="file://$PROJECT_DIR$/src/main/webapp/view/shop" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/view/shop/checkout_simple.jsp" value="file://$PROJECT_DIR$/src/main/webapp/view/shop" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/view/shop/my-orders.jsp" value="file://$PROJECT_DIR$/src/main/webapp/view/shop" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/view/shop/order-success.jsp" value="file://$PROJECT_DIR$/src/main/webapp/view/shop" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/view/shop/product-detail.jsp" value="file://$PROJECT_DIR$/src/main/webapp/view/shop" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/view/shop/shop.jsp" value="file://$PROJECT_DIR$/src/main/webapp/view/shop" />

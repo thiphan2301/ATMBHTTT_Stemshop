@@ -33,56 +33,6 @@
         </div>
     </div>
 
-    <div class="row g-3">
-        <div class="col-lg-8 col-md-12">
-            <div class="box-card">
-                <div class="box-header">
-                    <h3 class="box-title">Danh sách đơn hàng mới</h3>
-                </div>
-                <div class="table-responsive p-0">
-                    <table class="table table-hover table-custom">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Info</th>
-                            <th>Money</th>
-                            <th>Account</th>
-                            <th>Status</th>
-                            <th>Time</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>11</td>
-                            <td>Name: Đức Anh</td>
-                            <td>12.945.000 đ</td>
-                            <td><span class="badge-khach">Khách</span></td>
-                            <td><span class="badge-tiepnhan">Tiếp nhận</span></td>
-                            <td>2020-02-18 17:14:55</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4 col-md-12">
-            <div class="box-card">
-                <div class="box-header">
-                    <h3 class="box-title">Top sản phẩm bán chạy</h3>
-                </div>
-                <div class="p-0">
-                    <div class="product-item">
-                        <div class="product-info">
-                            <a href="#">Đồng hồ nam mĩ</a>
-                            <span>4 Lượt mua</span>
-                        </div>
-                        <div class="product-price">12.000.000 đ</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
 </div>
 

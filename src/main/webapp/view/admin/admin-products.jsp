@@ -11,98 +11,60 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        .table-actions {
-            margin-bottom: 20px;
-        }
-        .search-form {
-            display: inline-block;
-        }
+        .table-actions { margin-bottom: 20px; }
+        .search-form { display: inline-block; }
         .search-input {
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            width: 300px;
-            font-size: 14px;
+            padding: 10px 15px; border: 1px solid #ddd; border-radius: 6px; width: 300px; font-size: 14px;
         }
         .btn-action {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            color: white;
-            font-size: 12px;
-            margin-right: 5px;
-            transition: 0.3s;
-            text-decoration: none;
-            display: inline-block;
+            padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; color: white;
+            font-size: 12px; margin-right: 5px; transition: 0.3s; text-decoration: none; display: inline-block;
         }
-        .btn-edit {
-            background: #ffc107;
-        }
-        .btn-edit:hover {
-            background: #e0a800;
-        }
-        .btn-delete {
-            background: #dc3545;
-            border: none;
-            cursor: pointer;
-        }
-        .btn-delete:hover {
-            background: #c82333;
-        }
-        .product-img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-        .btn-product-detail{
-            background: #dc2c9e;
-            border: none;
-            cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 5px;
-            color: white;
-            font-size: 12px;
-            margin-right: 5px;
-            transition: 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-product-detail:hover {
-            background: #e0a800;
-            color: #fff;
+        .btn-edit { background: #ffc107; }
+        .btn-edit:hover { background: #e0a800; }
+        .btn-delete { background: #dc3545; }
+        .btn-delete:hover { background: #c82333; }
 
+        .btn-product-detail {
+            background: #dc2c9e; border: none; cursor: pointer; padding: 6px 12px;
+            border-radius: 5px; color: white; font-size: 12px; margin-right: 5px; transition: 0.3s; text-decoration: none; display: inline-block;
         }
-        .admin-table th:nth-child(5), .admin-table td:nth-child(5) {
-            width: 8%;
+        .btn-product-detail:hover { background: #b92082; color: #fff; }
+
+        .admin-table th:nth-child(5), .admin-table td:nth-child(5) { width: 8%; }
+        .admin-info { display: flex; align-items: center; gap: 8px; }
+        .admin-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
+        .delete-form { display: inline; }
+
+        /* --- CSS CHO MODAL CHI TIẾT SẢN PHẨM --- */
+        .product-modal {
+            display: none; position: fixed; z-index: 9999; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px);
         }
-        .admin-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .product-modal-content {
+            background-color: #fff; margin: 3% auto; padding: 15px;
+            border-radius: 12px; width: 85%; max-width: 1200px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); animation: fadeInDown 0.4s ease; position: relative;
         }
-        .admin-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
+        .product-modal-close {
+            color: #aaa; position: absolute; top: 10px; right: 20px;
+            font-size: 32px; font-weight: bold; cursor: pointer; transition: 0.3s; z-index: 10000;
         }
-        .delete-form {
-            display: inline;
+        .product-modal-close:hover { color: #dc3545; }
+        @keyframes fadeInDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
 <div class="admin-container">
-    <!-- Sidebar -->
     <aside class="admin-sidebar">
         <div class="admin-sidebar__logo">
             <img src="${pageContext.request.contextPath}/assets/images/logo.png" alt="STEM Logo">
         </div>
-
         <hr class="admin-sidebar__divider">
-
         <ul class="admin-menu">
             <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/dashboard'">
                 <i class="fa-solid fa-chart-line"></i> Dashboard
@@ -128,9 +90,7 @@
         </ul>
     </aside>
 
-    <!-- Main Content -->
     <main class="admin-main">
-        <!-- Topbar -->
         <header class="admin-topbar">
             <h1>Quản lý Sản Phẩm</h1>
             <div class="admin-info">
@@ -139,17 +99,25 @@
             </div>
         </header>
 
-        <!-- Content -->
         <div>
-            <!-- Tìm kiếm và thêm mới -->
             <div class="table-actions" style="display: flex; justify-content: space-between; align-items: center;">
                 <form method="get" class="search-form">
                     <input type="text" name="search" placeholder="Tìm sản phẩm..." class="search-input" >
                 </form>
 
-                <a href="${pageContext.request.contextPath}/admin/admin-product-add" class="btn-action" style="background: #ff8ab8;; padding: 10px 20px;">
-                    <i class="fas fa-plus"></i> Thêm sản phẩm mới
-                </a>
+                <div class="action-btn-group" style="display: flex; gap: 10px;">
+                    <a href="${pageContext.request.contextPath}/admin/admin-import-history" class="btn-action" style="background: #17a2b8;">
+                        <i class="fas fa-history"></i> Lịch sử nhập
+                    </a>
+
+                    <a href="${pageContext.request.contextPath}/admin/admin-product-import" class="btn-action" style="background: #28a745; padding: 10px 20px;">
+                        <i class="fas fa-truck-loading"></i> Nhập hàng
+                    </a>
+
+                    <a href="${pageContext.request.contextPath}/admin/admin-product-add" class="btn-action" style="background: #ff8ab8; padding: 10px 20px;">
+                        <i class="fas fa-plus"></i> Thêm sản phẩm mới
+                    </a>
+                </div>
             </div>
 <%--            Thông báo--%>
             <div style="margin-top: 20px;">
@@ -168,7 +136,6 @@
                 </c:if>
             </div>
 
-            <!-- Bảng sản phẩm -->
             <table class="admin-table">
                 <thead>
                 <tr>
@@ -186,15 +153,12 @@
                         <td>${product.id}</td>
                         <td>${product.productName}</td>
                         <td>${product.brandName}</td>
-                        <td>
-                            <fmt:formatNumber value="${product.price}" pattern="#,###"/> Đ
-                        </td>
+                        <td><fmt:formatNumber value="${product.price}" pattern="#,###"/> Đ</td>
                         <td>${product.quantity}</td>
                         <td>
                             <a href="${pageContext.request.contextPath}/admin/admin-product-edit?id=${product.id}" class="btn-action btn-edit">
                                 <i class="fas fa-edit"></i> Sửa
                             </a>
-
                             <form method="post" class="delete-form" onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="${product.id}">
@@ -202,22 +166,31 @@
                                     <i class="fas fa-trash"></i> Xóa
                                 </button>
                             </form>
-                            <a href="${pageContext.request.contextPath}/admin/admin-product-detail.jsp?id=${product.id}" class="btn-product-detail">Chi tiết</a>
+
+                            <a href="${pageContext.request.contextPath}/admin/admin-product-detail?id=${product.id}" class="btn-product-detail">
+                                <i class="fas fa-eye"></i> Chi tiết
+                            </a>
                         </td>
                     </tr>
                 </c:forEach>
                 <c:if test="${empty products}">
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 20px; color: #999;">
-                            Chưa có sản phẩm nào
-                        </td>
-                    </tr>
+                    <tr><td colspan="6" style="text-align: center; padding: 20px; color: #999;">Chưa có sản phẩm nào</td></tr>
                 </c:if>
                 </tbody>
             </table>
         </div>
     </main>
 </div>
+
+<div id="productDetailModal" class="product-modal">
+    <div class="product-modal-content">
+        <span class="product-modal-close" onclick="closeProductDetail()">&times;</span>
+        <div class="product-modal-body">
+            <iframe id="detailIframe" src="" style="width:100%; height:80vh; border:none; display:block;"></iframe>
+        </div>
+    </div>
+</div>
+
 
 </body>
 </html>

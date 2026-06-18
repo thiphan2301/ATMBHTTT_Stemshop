@@ -86,22 +86,6 @@ public class UserManagementServlet extends HttpServlet {
                     String nextStatus= "ACTIVE".equalsIgnoreCase(currentStatus)? "LOCKED": "ACTIVE";
                     userDAO.updateUserStatus(id, nextStatus);
                 }
-            } else if ("adminEditUser".equalsIgnoreCase(action)) {  //thao tác admin chỉnh sửa thông tin người dùng
-                String paramId= request.getParameter("id");
-                int id= Integer.parseInt(paramId);
-
-                // Admin có thể chỉnh sửa gồm:
-                // Họ tên, Username, Email, Số điện thoại, Địa chỉ, Vai trò, Trạng thái
-                User user= new User();
-                user.setFullName(request.getParameter("fullName"));
-                user.setUserName(request.getParameter("userName"));
-                user.setEmail(request.getParameter("email"));
-                user.setAddress(request.getParameter("address"));
-                user.setPhoneNumber(request.getParameter("phoneNumber"));
-                user.setRole(request.getParameter("role"));
-                user.setStatus(request.getParameter("status"));
-
-                userDAO.adminEditUser(user);
             }
             response.sendRedirect(request.getContextPath() + "/admin/admin-user");
 

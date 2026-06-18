@@ -295,8 +295,8 @@ public class UserDAO {
 
     // Admin chỉnh sửa thông tin của người dùng. Có thể chỉnh sửa gồm:
     // Họ tên, Username, Email, Số điện thoại, Địa chỉ, Vai trò, Trạng thái
-    public boolean adminEditUser(User user){
-        String sql = "UPDATE users SET FullName=?, UserName=?, Email=?, PhoneNumber=?, Address=?, Role=?, Status=? WHERE ID=?";
+    public boolean adminUserEdit(User user){
+        String sql = "UPDATE users SET FullName=?, UserName=?, Email=?, PhoneNumber=?, Address=?, Role=?, Status=?, IsVerified=?, oauth_provider=? WHERE ID=?";
         try (Connection conn= ConnectionDB.getConnection();
             PreparedStatement ps= conn.prepareStatement(sql)){
 
@@ -307,7 +307,9 @@ public class UserDAO {
             ps.setString(5, user.getAddress());
             ps.setString(6, user.getRole());
             ps.setString(7, user.getStatus());
-            ps.setInt(8, user.getId());
+            ps.setBoolean(8, user.isVerified());
+            ps.setString(9, user.getOauthProvider());
+            ps.setInt(10, user.getId());
 
             return ps.executeUpdate()>0;
 
@@ -317,10 +319,56 @@ public class UserDAO {
         return  false;
     }
 
+    // Kiểm tra khi sửa lại username và email có trùng với user đã tồn tại không
+    public boolean isDuplicateUserOrEmail(String username, String email, int userId){
+        String sql= "SELECT COUNT(*) FROM users WHERE (UserName=? OR Email=?) AND ID!=?";
+        try (Connection conn= ConnectionDB.getConnection();
+             PreparedStatement ps= conn.prepareStatement(sql)){
 
+             ps.setString(1, username);
+             ps.setString(2, email);
+             ps.setInt(3, userId);
 
+             try(ResultSet rs= ps.executeQuery()){
+                 if(rs.next()) return rs.getInt(1)>0;
+             }
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
+        return false;
+    }
 
-    // lấy user bằng id
+    // lấy user bằng id (thêm isVerified và oauth_provider) cho adminUserEdit
+    public User getUserByIdForAdUserEdit(int userId) {
+        String sql = "SELECT * FROM users WHERE ID=?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("ID"));
+                u.setFullName(rs.getString("FullName"));
+                u.setEmail(rs.getString("Email"));
+                u.setPhoneNumber(rs.getString("PhoneNumber"));
+                u.setAddress(rs.getString("Address"));
+                u.setUserName(rs.getString("UserName"));
+                u.setRole(rs.getString("Role"));
+                u.setStatus(rs.getString("Status"));
+                u.setCreateDate(rs.getDate("CreateAt"));
+                u.setVerified(rs.getBoolean("IsVerified"));
+                u.setOauthProvider(rs.getString("oauth_provider"));
+                return u;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Lấy user bằng id
     public User getUserById(int userId) {
         String sql = "SELECT * FROM users WHERE ID=?";
         try (Connection conn = ConnectionDB.getConnection();

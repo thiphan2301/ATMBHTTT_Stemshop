@@ -1,0 +1,106 @@
+.admin-table .btn-success{
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+.admin-table .btn-success:hover{
+    background-color: #35bc3a;
+    transition: ease .4s;
+}
+.admin-table .btn-danger{
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color:  #df4848;
+    color: white;
+    cursor: pointer;
+}
+.admin-table .btn-danger:hover{
+    background-color: #d9534f;
+    transition: ease .4s;
+}
+.admin-table .btn-detail{
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: #eadf21;
+    color: white;
+    cursor: pointer;
+}
+.admin-table .btn-detail:hover{
+    background-color: #c9bf1c;
+    transition: ease .4s;
+}
+
+.filter-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    background: #fdfdfd;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    align-items: center;
+    flex-wrap: wrap;
+    border: 1px solid #eee;
+}
+.filter-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.filter-item label {
+    font-weight: 600;
+    color: #444;
+    font-size: 14px;
+}
+.filter-item input, .filter-item select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    font-size: 14px;
+}
+.filter-item input:focus, .filter-item select:focus {
+    border-color: #4CAF50;
+}
+     /* Giao diện Modal */
+ .custom-modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; background-color: rgba(0,0,0,0.6); }
+.modal-content { background-color: #f4f6f8; margin: 2% auto; padding: 15px 20px; border: none; width: 85%; max-width: 900px; height: 85vh; border-radius: 8px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.close-btn { color: #888; position: absolute; top: 10px; right: 20px; font-size: 30px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+.close-btn:hover { color: #ee4d2d; }
+#detailFrame { width: 100%; height: calc(100% - 20px); border: none; margin-top: 15px; border-radius: 4px; }
+
+/* Giao diện Nút Bấm */
+.admin-table .btn-success {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+.admin-table .btn-success:hover { background-color: #35bc3a; transition: ease .4s; }
+
+.admin-table .btn-danger {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    background-color:  #df4848;
+    color: white;
+    cursor: pointer;
+}
+.admin-table .btn-danger:hover { background-color: #d9534f; transition: ease .4s; }
+
+.admin-table .btn-detail {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #eadf21;
+    color: white;
+    cursor: pointer;
+}
+.admin-table .btn-detail:hover { background-color: #c9c018; transition: ease .4s; }

@@ -3,10 +3,12 @@ package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList; // Bổ sung import này
+import java.util.HashMap;
 import java.util.List;      // Bổ sung import này
+import java.util.Map;
 
 public class Order {
-    private int id; // Mã đơn hàng dùng thuộc tính này
+    private int id;
     private int userId;
     private Integer promotionId;
     private Timestamp orderDate;
@@ -21,6 +23,9 @@ public class Order {
     private String paymentStatus;
     private String transactionId;
     private Date paymentTime;
+    private Map<String, Double> appliedPromotions = new HashMap<>(); // lưu tên mã giảm giá và số toeefn giảm tương ứng
+    private int districtId;
+    private String wardCode;
 
     // Thuộc tính phục vụ Admin View
     private String userFullName;
@@ -32,7 +37,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(int id, int userId, Integer promotionId, Timestamp orderDate, String orderStatus, double shippingFee, double totalAmount, String note, String shippingAddress, String receiverName, String receiverPhone, Integer paymentMethodId, String paymentStatus, String transactionId, Date paymentTime, String userFullName, String userPhone, List<OrderItem> items) {
+    public Order(int id, int userId, Integer promotionId, Timestamp orderDate, String orderStatus, double shippingFee, double totalAmount, String note, String shippingAddress, String receiverName, String receiverPhone, Integer paymentMethodId, String paymentStatus, String transactionId, Date paymentTime, String userFullName, String userPhone, List<OrderItem> items, Map<String, Double> appliedPromotions, int districtId, String wardCode) {
         this.id = id;
         this.userId = userId;
         this.promotionId = promotionId;
@@ -51,6 +56,9 @@ public class Order {
         this.userFullName = userFullName;
         this.userPhone = userPhone;
         this.items = items;
+        this.appliedPromotions = appliedPromotions;
+        this.districtId = districtId;
+        this.wardCode = wardCode;
     }
 
     // Getter và Setter cho danh sách sản phẩm
@@ -195,5 +203,29 @@ public class Order {
 
     public void setPaymentTime(Date paymentTime) {
         this.paymentTime = paymentTime;
+    }
+
+    public Map<String, Double> getAppliedPromotions() {
+        return appliedPromotions;
+    }
+
+    public void setAppliedPromotions(Map<String, Double> appliedPromotions) {
+        this.appliedPromotions = appliedPromotions;
+    }
+
+    public int getDistrictId() {
+        return districtId;
+    }
+
+    public void setDistrictId(int districtId) {
+        this.districtId = districtId;
+    }
+
+    public String getWardCode() {
+        return wardCode;
+    }
+
+    public void setWardCode(String wardCode) {
+        this.wardCode = wardCode;
     }
 }

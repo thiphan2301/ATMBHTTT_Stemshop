@@ -13,6 +13,10 @@ public class Product {
     private String imageUrl;
     private String brandName;
     private List<String> subImages;
+    private int newestBatchQuantity;
+    private String newestBatchExpiry;
+    private String nearestExpiry;
+    private int nearestExpiryMonths;
 
     public Product(int id, int categoriesID, int brandID, String productName, String description, double price, int quantity, String imageUrl, String  brandName,  List<String> subImages) {
         this.id = id;
@@ -109,4 +113,15 @@ public class Product {
     public void setSubImages(List<String> subImages) {
         this.subImages = subImages;
     }
+    public int getNewestBatchQuantity() { return newestBatchQuantity; }
+    public void setNewestBatchQuantity(int newestBatchQuantity) { this.newestBatchQuantity = newestBatchQuantity; }
+
+    public String getNewestBatchExpiry() { return newestBatchExpiry; }
+    public void setNewestBatchExpiry(String newestBatchExpiry) { this.newestBatchExpiry = newestBatchExpiry; }
+
+    public String getNearestExpiry() { return nearestExpiry; }
+    public void setNearestExpiry(String nearestExpiry) { this.nearestExpiry = nearestExpiry; }
+
+    public int getNearestExpiryMonths() { return nearestExpiryMonths; }
+    public void setNearestExpiryMonths(int nearestExpiryMonths) { this.nearestExpiryMonths = nearestExpiryMonths; }
 }

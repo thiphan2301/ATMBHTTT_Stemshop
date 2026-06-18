@@ -68,7 +68,17 @@
 
             <div style="text-align: right; padding: 15px 0; border-top: 1px dashed #eee;">
                 <span class="text-muted" style="font-size: 0.9rem; margin-right: 15px;">
-                    Voucher: <strong class="text-success">${empty order.promotionId ? 'Không có' : order.promotionId}</strong>
+                        Voucher:
+                        <strong class="text-success">
+                            <c:choose>
+                                <c:when test="${not empty order.appliedPromotions}">
+                                    <c:forEach var="promo" items="${order.appliedPromotions}" varStatus="loop">
+                                        ${promo.key}<c:if test="${!loop.last}">, </c:if>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>Không có</c:otherwise>
+                            </c:choose>
+                        </strong>
                 </span>
                 <span>Thành tiền đơn hàng: </span>
                 <strong style="color: #ee4d2d; font-size: 1.25rem;">
@@ -91,8 +101,10 @@
                     <button class="action-btn btn-red" onclick="cancelOrder('${order.id}')">Hủy đơn</button>
                 </c:if>
 
-                <c:if test="${order.orderStatus == 'DELIVERED'}">
-                    <button class="action-btn btn-green" onclick="confirmReceived('${order.id}')">Đã nhận được hàng</button>
+                <c:if test="${order.orderStatus == 'SHIPPING'}">
+                    <button class="action-btn btn-green" onclick="confirmReceived('${order.id}')">
+                        Đã nhận được hàng
+                    </button>
                 </c:if>
 
                 <c:if test="${order.orderStatus == 'DELIVERED'}">

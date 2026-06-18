@@ -18,7 +18,7 @@ public class OrderDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
@@ -36,11 +36,14 @@ public class OrderDetailServlet extends HttpServlet {
                 Order orderFromDB = orderDAO.getOrderById(orderId);
 
                 if (orderFromDB != null) {
+
+                    // Lấy danh sách Khuyến mãi và gán vào Order
+                    orderFromDB.setAppliedPromotions(orderDAO.getOrderPromotions(orderId));
+
                     // 3. Set vào biến 'order' để truyền sang JSP
                     request.setAttribute("order", orderFromDB);
 
                     // 4. Forward sang file JSP của bạn
-
                     request.getRequestDispatcher("/view/FT/order_detail.jsp").forward(request, response);
                 } else {
                     response.getWriter().println("Không tìm thấy đơn hàng này trong CSDL!");
@@ -49,11 +52,10 @@ public class OrderDetailServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/orders");
             }
         } catch (Exception e) {
-
-        e.printStackTrace();
-        response.setContentType("text/html; charset=UTF-8");
-        response.getWriter().println("<h3 style='color:red;'>LỖI RỒI: " + e.getMessage() + "</h3>");
-        response.getWriter().println("<p>Nếu có chữ 'Column not found', tức là tên cột trong Database khác với tên trong code rs.get...()</p>");
-    }
+            e.printStackTrace();
+            response.setContentType("text/html; charset=UTF-8");
+            response.getWriter().println("<h3 style='color:red;'>LỖI RỒI: " + e.getMessage() + "</h3>");
+            response.getWriter().println("<p>Nếu có chữ 'Column not found', tức là tên cột trong Database khác với tên trong code rs.get...()</p>");
+        }
     }
 }

@@ -6,6 +6,10 @@ import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.Product;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -631,6 +635,73 @@ public class ProductDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public void setInventoryAndBatchDetails(Product product) {
+        // Query lô mới nhất dựa trên ImportDate, lấy UsableQuantity và DamagedDate
+        String queryNewest = "SELECT UsableQuantity, DamagedDate FROM product_batches WHERE ProductID = ? ORDER BY ImportDate DESC LIMIT 1";
+
+        // Query ngày hỏng (DamagedDate) gần nhất của các lô còn hàng
+        String queryNearest = "SELECT MIN(DamagedDate) as nearest_date FROM product_batches WHERE ProductID = ? AND UsableQuantity > 0";
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        try (Connection conn = ConnectionDB.getConnection()) {
+
+            // 1. Set thông tin lô mới nhất
+            try (PreparedStatement ps1 = conn.prepareStatement(queryNewest)) {
+                ps1.setInt(1, product.getId());
+                try (ResultSet rs1 = ps1.executeQuery()) {
+                    if (rs1.next()) {
+                        product.setNewestBatchQuantity(rs1.getInt("UsableQuantity"));
+                        Timestamp dmgDate = rs1.getTimestamp("DamagedDate");
+                        if (dmgDate != null) {
+                            product.setNewestBatchExpiry(sdf.format(dmgDate));
+                        }
+                    }
+                }
+            }
+
+            // 2. Set thông tin ngày hỏng gần nhất của toàn kho
+            try (PreparedStatement ps2 = conn.prepareStatement(queryNearest)) {
+                ps2.setInt(1, product.getId());
+                try (ResultSet rs2 = ps2.executeQuery()) {
+                    if (rs2.next()) {
+                        Timestamp nearestDate = rs2.getTimestamp("nearest_date");
+                        if (nearestDate != null) {
+                            product.setNearestExpiry(sdf.format(nearestDate));
+
+                            // Tính toán số tháng còn lại
+                            LocalDate localNearestDate = nearestDate.toLocalDateTime().toLocalDate();
+                            LocalDate today = LocalDate.now();
+                            long monthsBetween = ChronoUnit.MONTHS.between(today, localNearestDate);
+                            product.setNearestExpiryMonths((int) monthsBetween);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi truy vấn lô hàng/tồn kho: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Hàm giảm số lượng sản phẩm trong kho khi mua hàng thành công
+    public boolean deductStock(int productId, int quantityBought) {
+        //Quantity >= ? đảm bảo kho phải đủ sp thì mới thực hiện trừ
+        String sql = "UPDATE products SET Quantity = Quantity - ? WHERE ID = ? AND Quantity >= ?";
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, quantityBought);
+            ps.setInt(2, productId);
+            ps.setInt(3, quantityBought);
+
+            return ps.executeUpdate() > 0; // Trả về true nếu trừ kho thành công
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

@@ -121,17 +121,24 @@
   </div>
 
   <div class="card-box">
-    <div class="info-row">
-      <span class="info-label">Mã khuyến mãi áp dụng</span>
-      <span class="info-value">
+      <div class="info-row">
+          <span class="info-label">Mã khuyến mãi áp dụng</span>
+          <span class="info-value">
         <c:choose>
-          <c:when test="${not empty order.promotionId}">
-            <span class="badge bg-success">${order.promotionId}</span>
-          </c:when>
-          <c:otherwise>Không có</c:otherwise>
+            <c:when test="${not empty order.appliedPromotions}">
+                <c:forEach var="promo" items="${order.appliedPromotions}">
+               <div style="margin-bottom: 5px;">
+                   <span class="badge bg-success" style="margin-right: 5px;">${promo.key}</span>
+                   <span style="color: #ee4d2d;">
+                       - <fmt:formatNumber value="${promo.value}" type="currency" currencySymbol="₫"/>
+                   </span>
+               </div>
+                </c:forEach>
+            </c:when>
+            <c:otherwise>Không có</c:otherwise>
         </c:choose>
       </span>
-    </div>
+      </div>
 
     <div class="info-row">
       <span class="info-label">Tổng tiền sản phẩm</span>
