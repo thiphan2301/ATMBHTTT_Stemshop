@@ -149,6 +149,8 @@ public class OrderDAO {
                         order.setTransactionId(rs.getString("transaction_id"));
                         order.setDistrictId(rs.getInt("district_id"));
                         order.setWardCode(rs.getString("ward_code"));
+                        order.setSignatureStatus(rs.getString("signature_status"));
+                        order.setSignature(rs.getString("signature"));
                     }
                 }
             }
@@ -198,6 +200,8 @@ public class OrderDAO {
                 order.setReceiverPhone(rsOrders.getString("ReceiverPhone"));
                 order.setPaymentStatus(rsOrders.getString("payment_status"));
                 order.setPaymentMethodId(rsOrders.getInt("payment_method_id"));
+                order.setSignatureStatus(rsOrders.getString("signature_status"));
+                order.setSignature(rsOrders.getString("signature"));
 
                 // LẤY DANH SÁCH SẢN PHẨM CHO ĐƠN HÀNG NÀY
                 List<OrderItem> items = getOrderItemsByOrderId(order.getId());
@@ -442,6 +446,29 @@ public class OrderDAO {
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    // cập nhật trạng thái ký xác thực
+    public void updateSignatureStatus(int orderId, String status) throws Exception {
+        String sql = "UPDATE orders SET signature_status = ? WHERE ID = ?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, orderId);
+            ps.executeUpdate();
+        }
+    }
+
+    // lưu chữ ký và đổi trạng thái sau khi ký đúng
+    public void saveSignature(int orderId, String signature, String status) throws Exception {
+        String sql = "UPDATE orders SET signature = ?, signature_status = ? WHERE ID = ?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, signature);
+            ps.setString(2, status);
+            ps.setInt(3, orderId);
+            ps.executeUpdate();
         }
     }
 }

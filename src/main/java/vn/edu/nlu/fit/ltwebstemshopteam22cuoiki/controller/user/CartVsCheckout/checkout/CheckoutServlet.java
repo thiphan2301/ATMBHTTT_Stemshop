@@ -34,41 +34,49 @@ public class CheckoutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        HttpSession session = req.getSession();
-        User user = (User) session.getAttribute("user");
-        Cart cart = (Cart) session.getAttribute("cart");
-
-        if (user == null) {
-            resp.sendRedirect(req.getContextPath() + "/view/user/sign-in.jsp");
-            return;
-        }
-        if (cart == null || cart.isEmpty()) {
-            resp.sendRedirect(req.getContextPath() + "/cart");
-            return;
-        }
-
-        double subTotal = cart.getTotalPrice();
-        String defaultCity = "Hồ Chí Minh";
-        double shippingFee = calculateShippingFee(subTotal, defaultCity);
-
-        req.setAttribute("user", user);
-        req.setAttribute("cart", cart);
-        req.setAttribute("subTotal", subTotal);
-        req.setAttribute("productDiscount", 0.0);
-        req.setAttribute("finalShippingFee", shippingFee);
-        req.setAttribute("finalTotalAmount", subTotal + shippingFee);
-        req.setAttribute("city", defaultCity);
-
-        session.removeAttribute("savedVoucherProduct");
-        session.removeAttribute("savedProductDiscount");
-        session.removeAttribute("savedVoucherShip");
-        session.removeAttribute("savedShipDiscount");
-        session.removeAttribute("savedGHNFee");
-        session.removeAttribute("SAFE_DISTRICT");
-        session.removeAttribute("SAFE_WARD");
-
-        req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
+        resp.getWriter().println("CHECKOUT GET RUNNING");
+        return;
     }
+
+//    @Override
+//    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+//            throws ServletException, IOException {
+//
+//        HttpSession session = req.getSession();
+//        User user = (User) session.getAttribute("user");
+//        Cart cart = (Cart) session.getAttribute("cart");
+//
+//        if (user == null) {
+//            resp.sendRedirect(req.getContextPath() + "/view/user/sign-in.jsp");
+//            return;
+//        }
+//        if (cart == null || cart.isEmpty()) {
+//            resp.sendRedirect(req.getContextPath() + "/cart");
+//            return;
+//        }
+//
+//        double subTotal = cart.getTotalPrice();
+//        String defaultCity = "Hồ Chí Minh";
+//        double shippingFee = calculateShippingFee(subTotal, defaultCity);
+//
+//        req.setAttribute("user", user);
+//        req.setAttribute("cart", cart);
+//        req.setAttribute("subTotal", subTotal);
+//        req.setAttribute("productDiscount", 0.0);
+//        req.setAttribute("finalShippingFee", shippingFee);
+//        req.setAttribute("finalTotalAmount", subTotal + shippingFee);
+//        req.setAttribute("city", defaultCity);
+//
+//        session.removeAttribute("savedVoucherProduct");
+//        session.removeAttribute("savedProductDiscount");
+//        session.removeAttribute("savedVoucherShip");
+//        session.removeAttribute("savedShipDiscount");
+//        session.removeAttribute("savedGHNFee");
+//        session.removeAttribute("SAFE_DISTRICT");
+//        session.removeAttribute("SAFE_WARD");
+//
+//        req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
+//    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -287,21 +295,13 @@ public class CheckoutServlet extends HttpServlet {
                 session.removeAttribute("SAFE_DISTRICT");
                 session.removeAttribute("SAFE_WARD");
 
-                if ("COD".equals(paymentMethod)) {
-                    resp.sendRedirect(req.getContextPath() + "/order-success");
-                    return;
+                try {
+                    orderDAO.updateSignatureStatus(orderId, "CHO_KY_SO");
+                } catch (Exception e) {
+                    System.out.println("Lỗi cập nhật trạng thái chờ ký: " + e.getMessage());
                 }
-
-                if ("VNPAY".equals(paymentMethod)) {
-                    String orderInfo = "Thanh toan don hang #" + orderId;
-                    String paymentUrl = VNPayConfig.createPaymentUrl(orderId, finalTotalAmount, orderInfo, req);
-                    if (paymentUrl != null) {
-                        resp.sendRedirect(paymentUrl);
-                    } else {
-                        resp.sendRedirect(req.getContextPath() + "/order-success");
-                    }
-                    return;
-                }
+                resp.sendRedirect(req.getContextPath() + "/verify-signature?orderId=" + orderId);
+                return;
             }
 
             req.setAttribute("user", user);

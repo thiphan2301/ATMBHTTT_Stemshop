@@ -26,6 +26,8 @@ public class Order {
     private Map<String, Double> appliedPromotions = new HashMap<>(); // lưu tên mã giảm giá và số toeefn giảm tương ứng
     private int districtId;
     private String wardCode;
+    private String signatureStatus;
+    private String signature;
 
     // Thuộc tính phục vụ Admin View
     private String userFullName;
@@ -37,7 +39,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(int id, int userId, Integer promotionId, Timestamp orderDate, String orderStatus, double shippingFee, double totalAmount, String note, String shippingAddress, String receiverName, String receiverPhone, Integer paymentMethodId, String paymentStatus, String transactionId, Date paymentTime, String userFullName, String userPhone, List<OrderItem> items, Map<String, Double> appliedPromotions, int districtId, String wardCode) {
+    public Order(int id, int userId, Integer promotionId, Timestamp orderDate, String orderStatus, double shippingFee, double totalAmount, String note, String shippingAddress, String receiverName, String receiverPhone, Integer paymentMethodId, String paymentStatus, String transactionId, Date paymentTime, String userFullName, String userPhone, List<OrderItem> items, Map<String, Double> appliedPromotions, int districtId, String wardCode, String signatureStatus, String signature) {
         this.id = id;
         this.userId = userId;
         this.promotionId = promotionId;
@@ -59,6 +61,8 @@ public class Order {
         this.appliedPromotions = appliedPromotions;
         this.districtId = districtId;
         this.wardCode = wardCode;
+        this.signatureStatus = signatureStatus;
+        this.signature = signature;
     }
 
     // Getter và Setter cho danh sách sản phẩm
@@ -227,5 +231,21 @@ public class Order {
 
     public void setWardCode(String wardCode) {
         this.wardCode = wardCode;
+    }
+
+    public String getSignatureStatus() {
+        return signatureStatus;
+    }
+
+    public void setSignatureStatus(String signatureStatus) {
+        this.signatureStatus = signatureStatus;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }

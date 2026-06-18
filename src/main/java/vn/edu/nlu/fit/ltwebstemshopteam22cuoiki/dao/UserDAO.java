@@ -586,4 +586,19 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
+
+    // lấy publiv key
+    public String getPublicKey(int userId) throws Exception {
+        String sql = "SELECT public_key FROM user_keys WHERE user_id = ? ORDER BY id DESC LIMIT 1";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("public_key");
+                }
+            }
+        }
+        return null;
+    }
 }

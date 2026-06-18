@@ -39,6 +39,9 @@
                 <span><strong>Đơn hàng #${order.id}</strong></span>
                 <span class="order-status">
                     <c:choose>
+                        <c:when test="${order.signatureStatus == 'CHO_KY_SO'}">
+                            <span style="color: #ff9800; font-weight: bold;"><i class="fas fa-file-signature"></i> Đang chờ ký xác thực</span>
+                        </c:when>
                         <c:when test="${order.orderStatus == 'PENDING'}">Chờ xác nhận</c:when>
                         <c:when test="${order.orderStatus == 'CANCEL_REQUESTED'}">Đang chờ duyệt hủy</c:when>
                         <c:when test="${order.orderStatus == 'SHIPPING'}">Đang giao hàng</c:when>
@@ -67,19 +70,6 @@
             </c:forEach>
 
             <div style="text-align: right; padding: 15px 0; border-top: 1px dashed #eee;">
-                <span class="text-muted" style="font-size: 0.9rem; margin-right: 15px;">
-                        Voucher:
-                        <strong class="text-success">
-                            <c:choose>
-                                <c:when test="${not empty order.appliedPromotions}">
-                                    <c:forEach var="promo" items="${order.appliedPromotions}" varStatus="loop">
-                                        ${promo.key}<c:if test="${!loop.last}">, </c:if>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>Không có</c:otherwise>
-                            </c:choose>
-                        </strong>
-                </span>
                 <span>Thành tiền đơn hàng: </span>
                 <strong style="color: #ee4d2d; font-size: 1.25rem;">
                     <fmt:formatNumber value="${order.totalAmount}" type="currency" currencySymbol="₫"/>
@@ -87,29 +77,37 @@
             </div>
 
             <div class="order-actions">
-                <button class="action-btn btn-blue" onclick="openDetailPopup('${pageContext.request.contextPath}/orderDetails?id=${order.id}')">
-                    Xem chi tiết
-                </button>
+                <c:choose>
+                    <c:when test="${order.signatureStatus == 'CHO_KY_SO'}">
+                        <span class="sign-countdown" data-id="${order.id}" data-time="${order.orderDate.time}" style="color: red; font-weight: bold; margin-right: 15px; font-size: 16px;"></span>
 
-                <c:if test="${order.orderStatus == 'PENDING' && order.paymentStatus != 'paid' && order.paymentMethodId == 2}">
-                    <button class="action-btn btn-orange" style="background-color: #ff9800; color: white; border-color: #ff9800;" onclick="continuePayment('${order.id}')">
-                        Tiếp tục thanh toán
-                    </button>
-                </c:if>
+                        <button id="btn-sign-${order.id}" class="action-btn btn-orange" style="background-color: #ff9800; color: white; border-color: #ff9800;" onclick="window.location.href='${pageContext.request.contextPath}/verify-signature?orderId=${order.id}'">
+                            <i class="fas fa-pen-nib"></i> Ký xác nhận ngay
+                        </button>
 
-                <c:if test="${order.orderStatus == 'PENDING'}">
-                    <button class="action-btn btn-red" onclick="cancelOrder('${order.id}')">Hủy đơn</button>
-                </c:if>
+                        <button class="action-btn btn-red" onclick="cancelOrder('${order.id}')">Hủy đơn</button>
+                    </c:when>
 
-                <c:if test="${order.orderStatus == 'SHIPPING'}">
-                    <button class="action-btn btn-green" onclick="confirmReceived('${order.id}')">
-                        Đã nhận được hàng
-                    </button>
-                </c:if>
+                    <c:otherwise>
+                        <button class="action-btn btn-blue" onclick="openDetailPopup('${pageContext.request.contextPath}/orderDetails?id=${order.id}')">Xem chi tiết</button>
 
-                <c:if test="${order.orderStatus == 'DELIVERED'}">
-                    <button class="action-btn btn-gray" onclick="requestReturn('${order.id}')">Trả hàng / Hoàn tiền</button>
-                </c:if>
+                        <c:if test="${order.orderStatus == 'PENDING' && order.paymentStatus != 'paid' && order.paymentMethodId == 2}">
+                            <button class="action-btn btn-orange" style="background-color: #ff9800; color: white; border-color: #ff9800;" onclick="continuePayment('${order.id}')">Tiếp tục thanh toán</button>
+                        </c:if>
+
+                        <c:if test="${order.orderStatus == 'PENDING'}">
+                            <button class="action-btn btn-red" onclick="cancelOrder('${order.id}')">Hủy đơn</button>
+                        </c:if>
+
+                        <c:if test="${order.orderStatus == 'SHIPPING'}">
+                            <button class="action-btn btn-green" onclick="confirmReceived('${order.id}')">Đã nhận được hàng</button>
+                        </c:if>
+
+                        <c:if test="${order.orderStatus == 'DELIVERED'}">
+                            <button class="action-btn btn-gray" onclick="requestReturn('${order.id}')">Trả hàng / Hoàn tiền</button>
+                        </c:if>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </c:forEach>
@@ -128,6 +126,39 @@
 </div>
 
 <script>
+    // đếmm ngược 24h
+    document.addEventListener("DOMContentLoaded", function() {
+        const signTimers = document.querySelectorAll('.sign-countdown');
+        signTimers.forEach(timer => {
+            const orderId = timer.getAttribute('data-id');
+            // Lấy Timestamp lúc tạo đơn (từ DB)
+            const orderTimestamp = parseInt(timer.getAttribute('data-time'));
+
+            // Hạn chót = Lúc tạo + 24 giờ (Tính bằng mili-giây)
+            const deadline = orderTimestamp + (24 * 60 * 60 * 1000);
+
+            const x = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = deadline - now;
+
+                if (distance < 0) {
+                    clearInterval(x);
+                    timer.innerHTML = "Đã quá hạn ký xác thực (Đơn hàng bị hủy)!";
+                    // Ẩn nút ký đi vì đã hết hạn
+                    document.getElementById('btn-sign-' + orderId).style.display = 'none';
+
+                    // GỌI API NGẦM ĐỂ HỦY ĐƠN TRONG DATABASE (Nếu bạn muốn tự động hóa)
+                    // fetch('${pageContext.request.contextPath}/cancelOrder?id=' + orderId + '&type=auto');
+                } else {
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    timer.innerHTML = "⏳ Hạn ký còn: " + hours + "h " + minutes + "m " + seconds + "s";
+                }
+            }, 1000);
+        });
+    });
+
     function filterOrders(status, btn) {
         document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
         btn.classList.add('active');
