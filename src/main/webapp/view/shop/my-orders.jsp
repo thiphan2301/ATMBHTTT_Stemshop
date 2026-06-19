@@ -41,14 +41,32 @@
                 <div style="display: flex; gap: 15px; align-items: center;">
 
                     <c:choose>
-                        <c:when test="${order.signatureStatus == 'CHO_KY_SO'}">
+                        <%-- 1. Đang chờ ký (Đơn chưa hủy) --%>
+                        <c:when test="${order.signatureStatus == 'CHO_KY_SO' && order.orderStatus != 'CANCELLED'}">
                             <span style="color: #ff9800; border: 1px solid #ff9800; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">
                                 <i class="fas fa-file-signature"></i> Đang chờ ký
                             </span>
                         </c:when>
-                        <c:when test="${order.signatureStatus == 'DA_KY'}">
+
+                        <%-- 2. Đã ký VÀ dữ liệu an toàn --%>
+                        <c:when test="${order.signatureStatus == 'DA_KY' && !order.tampered}">
                             <span style="color: #4CAF50; border: 1px solid #4CAF50; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">
                                 <i class="fas fa-check-circle"></i> Đã ký xác thực
+                            </span>
+                        </c:when>
+
+                        <%-- 3. Đã ký NHƯNG dữ liệu bị sửa đổi --%>
+                        <c:when test="${order.signatureStatus == 'DA_KY' && order.tampered}">
+                            <span style="color: #d93838; border: 1px solid #ff4d4d; background-color: #fff0f0; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;"
+                                  title="Dữ liệu đơn hàng không còn khớp với chữ ký ban đầu của bạn!">
+                                <i class="fas fa-ban"></i> Chữ ký mất hiệu lực (Dữ liệu lỗi)
+                            </span>
+                        </c:when>
+
+                        <%-- 4. KÝ THẤT BẠI (Do hủy đơn hoặc quá hạn) --%>
+                        <c:when test="${order.signatureStatus == 'DA_HUY' || order.orderStatus == 'CANCELLED'}">
+                            <span style="color: #757575; border: 1px solid #9e9e9e; background-color: #f5f5f5; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">
+                                <i class="fas fa-file-excel"></i> Ký xác thực thất bại
                             </span>
                         </c:when>
                     </c:choose>
@@ -93,7 +111,8 @@
 
             <div class="order-actions">
                 <c:choose>
-                    <c:when test="${order.signatureStatus == 'CHO_KY_SO'}">
+                    <%-- chỉ hiện nút ký và đếm ngược khi đơn chưa ký và chưa bị hủy--%>
+                    <c:when test="${order.signatureStatus == 'CHO_KY_SO' && order.orderStatus != 'CANCELLED'}">
                         <span class="sign-countdown" data-id="${order.id}" data-time="${order.orderDate.time}" style="color: red; font-weight: bold; margin-right: 15px; font-size: 16px;"></span>
 
                         <button id="btn-sign-${order.id}" class="action-btn btn-orange" style="background-color: #ff9800; color: white; border-color: #ff9800;" onclick="window.location.href='${pageContext.request.contextPath}/verify-signature?orderId=${order.id}'">

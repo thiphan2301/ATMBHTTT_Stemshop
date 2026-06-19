@@ -34,49 +34,41 @@ public class CheckoutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        resp.getWriter().println("CHECKOUT GET RUNNING");
-        return;
-    }
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("user");
+        Cart cart = (Cart) session.getAttribute("cart");
 
-//    @Override
-//    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-//            throws ServletException, IOException {
-//
-//        HttpSession session = req.getSession();
-//        User user = (User) session.getAttribute("user");
-//        Cart cart = (Cart) session.getAttribute("cart");
-//
-//        if (user == null) {
-//            resp.sendRedirect(req.getContextPath() + "/view/user/sign-in.jsp");
-//            return;
-//        }
-//        if (cart == null || cart.isEmpty()) {
-//            resp.sendRedirect(req.getContextPath() + "/cart");
-//            return;
-//        }
-//
-//        double subTotal = cart.getTotalPrice();
-//        String defaultCity = "Hồ Chí Minh";
-//        double shippingFee = calculateShippingFee(subTotal, defaultCity);
-//
-//        req.setAttribute("user", user);
-//        req.setAttribute("cart", cart);
-//        req.setAttribute("subTotal", subTotal);
-//        req.setAttribute("productDiscount", 0.0);
-//        req.setAttribute("finalShippingFee", shippingFee);
-//        req.setAttribute("finalTotalAmount", subTotal + shippingFee);
-//        req.setAttribute("city", defaultCity);
-//
-//        session.removeAttribute("savedVoucherProduct");
-//        session.removeAttribute("savedProductDiscount");
-//        session.removeAttribute("savedVoucherShip");
-//        session.removeAttribute("savedShipDiscount");
-//        session.removeAttribute("savedGHNFee");
-//        session.removeAttribute("SAFE_DISTRICT");
-//        session.removeAttribute("SAFE_WARD");
-//
-//        req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
-//    }
+        if (user == null) {
+            resp.sendRedirect(req.getContextPath() + "/view/user/sign-in.jsp");
+            return;
+        }
+        if (cart == null || cart.isEmpty()) {
+            resp.sendRedirect(req.getContextPath() + "/cart");
+            return;
+        }
+
+        double subTotal = cart.getTotalPrice();
+        String defaultCity = "Hồ Chí Minh";
+        double shippingFee = calculateShippingFee(subTotal, defaultCity);
+
+        req.setAttribute("user", user);
+        req.setAttribute("cart", cart);
+        req.setAttribute("subTotal", subTotal);
+        req.setAttribute("productDiscount", 0.0);
+        req.setAttribute("finalShippingFee", shippingFee);
+        req.setAttribute("finalTotalAmount", subTotal + shippingFee);
+        req.setAttribute("city", defaultCity);
+
+        session.removeAttribute("savedVoucherProduct");
+        session.removeAttribute("savedProductDiscount");
+        session.removeAttribute("savedVoucherShip");
+        session.removeAttribute("savedShipDiscount");
+        session.removeAttribute("savedGHNFee");
+        session.removeAttribute("SAFE_DISTRICT");
+        session.removeAttribute("SAFE_WARD");
+
+        req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
