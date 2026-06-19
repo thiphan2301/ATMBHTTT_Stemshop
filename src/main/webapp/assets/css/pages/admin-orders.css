@@ -104,3 +104,14 @@
     cursor: pointer;
 }
 .admin-table .btn-detail:hover { background-color: #c9c018; transition: ease .4s; }
+
+.admin-table .btn-edit {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #ffc107;
+    color: white;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.admin-table .btn-edit:hover { background-color: #e0a800; transition: ease .4s; }
