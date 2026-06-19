@@ -72,13 +72,13 @@ public class OrderDAO {
     public List<Order> getAllOrdersForAdmin() {
         List<Order> list = new ArrayList<>();
         String sql = "SELECT o.*, u.FullName, u.PhoneNumber " +
-                "FROM orders o " +
-                "JOIN users u ON o.UserID = u.ID " +
-                "ORDER BY o.OrderDate DESC";
+                "FROM orders o JOIN users u ON o.UserID = u.ID ORDER BY o.OrderDate DESC";
 
         try (Connection con = ConnectionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
+
+            UserDAO userDAO = new UserDAO(); // Gọi UserDAO để lấy khóa
 
             while (rs.next()) {
                 Order o = new Order();
@@ -95,6 +95,19 @@ public class OrderDAO {
                 o.setUserPhone(rs.getString("PhoneNumber"));
                 o.setPaymentMethodId(rs.getInt("payment_method_id"));
                 o.setPaymentStatus(rs.getString("payment_status"));
+                o.setSignatureStatus(rs.getString("signature_status"));
+                o.setSignature(rs.getString("signature"));
+
+                // Kiểm tra gian lận
+                o.setTampered(false); // Mặc định là an toàn
+                if ("DA_KY".equals(o.getSignatureStatus())) {
+                    String rawData = generateRawData(o);
+                    String publicKey = userDAO.getPublicKey(o.getUserId());
+                    if (publicKey == null || o.getSignature() == null || !vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.RSAUtil.verify(rawData, o.getSignature(), publicKey)) {
+                        o.setTampered(true); 
+                    }
+                }
+
                 list.add(o);
             }
         } catch (Exception e) {
@@ -102,7 +115,6 @@ public class OrderDAO {
         }
         return list;
     }
-
     // 5. Cập nhật trạng thái đơn hàng
     public void updateOrderStatus(int orderId, String status) {
         String sql = "UPDATE orders SET OrderStatus=? WHERE ID=?";
@@ -471,4 +483,16 @@ public class OrderDAO {
             ps.executeUpdate();
         }
     }
+
+    //Lấy dl chuỗi đơn hàng
+    private String generateRawData(Order order) {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = order.getOrderDate() != null ? sdf.format(order.getOrderDate()) : "";
+        return "ID=" + order.getId() + "|UserID=" + order.getUserId() + "|Date=" + formattedDate +
+                "|Receiver=" + order.getReceiverName() + "|Phone=" + order.getReceiverPhone() +
+                "|Address=" + order.getShippingAddress() + "|Total=" + (long) order.getTotalAmount() +
+                "|ShipFee=" + (long) order.getShippingFee() + "|PayMethod=" + order.getPaymentMethodId();
+    }
+
+
 }

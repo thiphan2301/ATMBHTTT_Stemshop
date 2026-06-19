@@ -28,6 +28,7 @@ public class Order {
     private String wardCode;
     private String signatureStatus;
     private String signature;
+    private boolean tampered;
 
     // Thuộc tính phục vụ Admin View
     private String userFullName;
@@ -39,7 +40,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(int id, int userId, Integer promotionId, Timestamp orderDate, String orderStatus, double shippingFee, double totalAmount, String note, String shippingAddress, String receiverName, String receiverPhone, Integer paymentMethodId, String paymentStatus, String transactionId, Date paymentTime, String userFullName, String userPhone, List<OrderItem> items, Map<String, Double> appliedPromotions, int districtId, String wardCode, String signatureStatus, String signature) {
+    public Order(int id, int userId, Integer promotionId, Timestamp orderDate, String orderStatus, double shippingFee, double totalAmount, String note, String shippingAddress, String receiverName, String receiverPhone, Integer paymentMethodId, String paymentStatus, String transactionId, Date paymentTime, String userFullName, String userPhone, List<OrderItem> items, Map<String, Double> appliedPromotions, int districtId, String wardCode, String signatureStatus, String signature, boolean tampered) {
         this.id = id;
         this.userId = userId;
         this.promotionId = promotionId;
@@ -63,6 +64,7 @@ public class Order {
         this.wardCode = wardCode;
         this.signatureStatus = signatureStatus;
         this.signature = signature;
+        this.tampered = tampered;
     }
 
     // Getter và Setter cho danh sách sản phẩm
@@ -247,5 +249,13 @@ public class Order {
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public boolean isTampered() {
+        return tampered;
+    }
+
+    public void setTampered(boolean tampered) {
+        this.tampered = tampered;
     }
 }

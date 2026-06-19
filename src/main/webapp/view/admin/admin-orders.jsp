@@ -160,11 +160,20 @@
                                 </c:if>
                             </c:if>
 
-                            <button type="button" class="btn-detail" onclick="openDetailPopup('${pageContext.request.contextPath}/orderDetails?id=${o.id}')">
+                            <button type="button" class="btn-detail" onclick="openDetailPopup('${pageContext.request.contextPath}/orderDetails?id=${o.id}&source=admin')">
                                 Chi tiết
                             </button>
                         </td>
                     </tr>
+
+                    <c:if test="${o.tampered}">
+                        <tr style="background-color: #fff0f0;">
+                            <td colspan="6" style="color: #d93838; padding: 10px; font-weight: bold; text-align: center; border: 1px solid #ffcccc;">
+                                <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.2rem; margin-right: 5px;"></i>
+                                CẢNH BÁO: Dữ liệu của Đơn hàng #${o.id} đã bị thay đổi sau khi ký!
+                            </td>
+                        </tr>
+                    </c:if>
                 </c:forEach>
                 </tbody>
             </table>
