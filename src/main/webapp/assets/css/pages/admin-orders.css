@@ -86,12 +86,16 @@
 
 .order-history-table th,
 .order-history-table td {
-    vertical-align: top;
+    vertical-align: middle;
+    padding: 10px 12px;
 }
 
 .order-history-table th:first-child,
 .order-history-table td:first-child {
     white-space: nowrap;
+    width: 180px;
+    min-width: 170px;
+    padding-right: 15px;
 }
 
 .history-value {
