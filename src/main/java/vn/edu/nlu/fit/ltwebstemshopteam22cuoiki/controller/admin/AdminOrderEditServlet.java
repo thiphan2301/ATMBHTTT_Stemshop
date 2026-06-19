@@ -13,6 +13,10 @@ import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.Order;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.ArrayList;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.OrderHistoryLogger;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.OrderHistoryLogger.ChangeLog;
 
 @WebServlet("/admin/admin-order-edit")
 public class AdminOrderEditServlet extends HttpServlet {
@@ -145,9 +149,50 @@ public class AdminOrderEditServlet extends HttpServlet {
                 return;
             }
 
+            Order oldOrder = orderDAO.getOrderById(oldId);
             boolean isUpdated = orderDAO.updateOrderAdmin(oldId, newId, userId, orderTimestamp, receiverName, receiverPhone, shippingAddress, totalAmount, shippingFee, paymentMethodId);
 
             if (isUpdated) {
+                if (oldOrder != null) {
+                    List<ChangeLog> changes = new ArrayList<>();
+                    if (oldOrder.getId() != newId) {
+                        changes.add(new ChangeLog("Mã đơn hàng (ID)", String.valueOf(oldOrder.getId()), String.valueOf(newId)));
+                    }
+                    if (oldOrder.getUserId() != userId) {
+                        changes.add(new ChangeLog("ID Người mua (UserID)", String.valueOf(oldOrder.getUserId()), String.valueOf(userId)));
+                    }
+                    String oldDateStr = oldOrder.getOrderDate() != null ? new SimpleDateFormat("yyyy-MM-dd HH:mm").format(oldOrder.getOrderDate()) : "";
+                    String newDateStr = orderTimestamp != null ? new SimpleDateFormat("yyyy-MM-dd HH:mm").format(orderTimestamp) : "";
+                    if (!oldDateStr.equals(newDateStr)) {
+                        changes.add(new ChangeLog("Ngày đặt (Date)", oldDateStr, newDateStr));
+                    }
+                    String oldRec = oldOrder.getReceiverName() != null ? oldOrder.getReceiverName() : "";
+                    if (!oldRec.equals(receiverName)) {
+                        changes.add(new ChangeLog("Người nhận (Receiver)", oldRec, receiverName));
+                    }
+                    String oldPhone = oldOrder.getReceiverPhone() != null ? oldOrder.getReceiverPhone() : "";
+                    if (!oldPhone.equals(receiverPhone)) {
+                        changes.add(new ChangeLog("Số điện thoại (Phone)", oldPhone, receiverPhone));
+                    }
+                    String oldAddr = oldOrder.getShippingAddress() != null ? oldOrder.getShippingAddress() : "";
+                    if (!oldAddr.equals(shippingAddress)) {
+                        changes.add(new ChangeLog("Địa chỉ (Address)", oldAddr, shippingAddress));
+                    }
+                    if (oldOrder.getTotalAmount() != totalAmount) {
+                        changes.add(new ChangeLog("Tổng tiền (Total)", String.format("%,.0f Đ", oldOrder.getTotalAmount()), String.format("%,.0f Đ", totalAmount)));
+                    }
+                    if (oldOrder.getShippingFee() != shippingFee) {
+                        changes.add(new ChangeLog("Phí ship (ShipFee)", String.format("%,.0f Đ", oldOrder.getShippingFee()), String.format("%,.0f Đ", shippingFee)));
+                    }
+                    if (oldOrder.getPaymentMethodId() != paymentMethodId) {
+                        String oldPay = oldOrder.getPaymentMethodId() == 1 ? "Tiền mặt (COD)" : "Chuyển khoản (VNPAY)";
+                        String newPay = paymentMethodId == 1 ? "Tiền mặt (COD)" : "Chuyển khoản (VNPAY)";
+                        changes.add(new ChangeLog("PT Thanh toán (PayMethod)", oldPay, newPay));
+                    }
+                    if (!changes.isEmpty()) {
+                        OrderHistoryLogger.logChange(newId, changes);
+                    }
+                }
                 session.setAttribute("message", "Cập nhật đơn hàng thành công!");
                 response.sendRedirect(request.getContextPath() + "/admin/admin-orders");
             } else {
