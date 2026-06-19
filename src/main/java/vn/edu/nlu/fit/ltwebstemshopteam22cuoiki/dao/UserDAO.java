@@ -589,7 +589,7 @@ public class UserDAO {
 
     // lấy publiv key
     public String getPublicKey(int userId) throws Exception {
-        String sql = "SELECT public_key FROM user_keys WHERE user_id = ? ORDER BY id DESC LIMIT 1";
+        String sql = "SELECT public_key FROM user_keys WHERE user_id = ? AND key_revoked_at IS NULL ORDER BY id DESC LIMIT 1";
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);

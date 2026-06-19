@@ -339,8 +339,8 @@
 
             <div style="margin-top: 15px;">
               <a href="${pageContext.request.contextPath}/revoke-key" class="btn" style="background-color: #c62828; color: white;"
-                 onclick="return confirm('Bạn có chắc chắn muốn thu hồi (vô hiệu hóa) khóa này không? Sau khi thu hồi bạn sẽ không thể dùng nó để ký đơn hàng nữa!');">
-                <i class="fa-solid fa-trash-can"></i> Thu Hồi Khóa Này
+                 onclick="return confirm('Bạn có chắc chắn muốn yêu cầu báo mất khóa này không? Sau khi xác nhận bạn sẽ không thể dùng nó để ký đơn hàng nữa!');">
+                <i class="fa-solid fa-trash-can"></i> Báo Mất Khóa
               </a>
             </div>
           </c:when>
@@ -373,6 +373,7 @@
         </c:choose>
       </div>
     </div>
+</div>
 </div>
 
 <%@ include file="/WEB-INF/components/footer.jsp" %>
