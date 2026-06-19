@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.UserDAO;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.UserKeyDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.AppConfig;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.EmailUtils;
@@ -28,6 +29,11 @@ public class ProfileServlet extends HttpServlet {
             request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
             return;
         }
+
+        UserKeyDAO dao = new UserKeyDAO();
+        String publicKey = dao.getPublicKey(user.getId());
+        request.setAttribute("publicKey", publicKey);
+
         // Kiểm tra nếu là admin, thêm flag
         request.setAttribute("isAdmin", "admin".equalsIgnoreCase(user.getRole()));
         request.setAttribute("user", user);
