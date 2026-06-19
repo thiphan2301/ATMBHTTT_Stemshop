@@ -261,6 +261,7 @@
       <div style="margin-top: 30px; display: flex; gap: 15px; align-items: center;">
         <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Lưu Thay Đổi</button>
         <button type="button" class="btn btn-outline" onclick="togglePasswordBox()"><i class="fa-solid fa-key"></i> Đổi Mật Khẩu</button>
+        <button type="button" class="btn btn-outline" onclick="togglePublicKeyBox()"><i class="fa-solid fa-shield-halved"></i> Cấu Hình Khóa Số</button>
       </div>
     </form>
 
@@ -314,26 +315,95 @@
       </div>
     </form>
   </div>
+
+  <div class="password-section" id="publicKeyBox" style="display: ${sessionScope.errorPublicKey eq 'show' ? 'block' : 'none'};">
+    <h3><i class="fa-solid fa-key" style="color: var(--primary);"></i> Quản Lý Khóa Công Khai (Public Key)</h3>
+
+    <div class="form-grid">
+      <div class="form-group full-width">
+        <label style="font-size: 16px;">Trạng thái khóa hiện tại</label>
+
+        <c:choose>
+          <%-- TRƯỜNG HỢP 1: ĐÃ CÓ KEY ACTIVE --%>
+          <c:when test="${not empty publicKey}">
+            <span style="color: #2e7d32; font-weight: bold; font-size: 15px;"><i class="fa-solid fa-circle-check"></i> Đã cấu hình</span>
+
+            <div style="margin-top: 15px; padding: 15px; background: #e8f5e9; border-radius: 6px; border: 1px solid #c8e6c9;">
+              <p style="margin: 0 0 10px 0; font-size: 14px; color: #1b5e20;">
+                <strong>Khóa hiện tại của bạn đang hoạt động.</strong> Để bảo mật, bạn không thể thêm khóa mới đè lên khóa cũ.
+              </p>
+              <code style="display:block; word-break: break-all; background: #fff; padding: 8px; border-radius: 4px; font-size: 12px; max-height: 80px; overflow-y: auto;">
+                  ${publicKey}
+              </code>
+            </div>
+
+            <div style="margin-top: 15px;">
+              <a href="${pageContext.request.contextPath}/revoke-key" class="btn" style="background-color: #c62828; color: white;"
+                 onclick="return confirm('Bạn có chắc chắn muốn thu hồi (vô hiệu hóa) khóa này không? Sau khi thu hồi bạn sẽ không thể dùng nó để ký đơn hàng nữa!');">
+                <i class="fa-solid fa-trash-can"></i> Thu Hồi Khóa Này
+              </a>
+            </div>
+          </c:when>
+
+          <%-- TRƯỜNG HỢP 2: CHƯA CÓ KEY HOẶC ĐÃ BỊ HỦY --%>
+          <c:otherwise>
+            <span style="color: #c62828; font-weight: bold; font-size: 15px;"><i class="fa-solid fa-circle-xmark"></i> Chưa có khóa (Vui lòng cập nhật để ký đơn hàng)</span>
+
+            <%-- Form upload hỗ trợ cả file và text --%>
+            <form action="${pageContext.request.contextPath}/update-public-key" method="post" enctype="multipart/form-data" style="margin-top: 20px;">
+
+              <div class="form-group full-width">
+                <label>Tải lên file Public Key (.txt, .pem)</label>
+                <input type="file" name="publicKeyFile" accept=".txt, .pem, .cer" class="form-control">
+                <small style="color: #757575;">Hệ thống sẽ ưu tiên đọc nội dung file nếu bạn tải lên.</small>
+              </div>
+
+              <div class="form-group full-width" style="margin-top: 15px;">
+                <label>Hoặc dán nội dung Public Key trực tiếp</label>
+                <textarea name="publicKeyText" class="form-control" rows="6"
+                          placeholder="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgK..."
+                          style="font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
+              </div>
+
+              <div style="margin-top: 20px;">
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Cập Nhật Khóa Số</button>
+              </div>
+            </form>
+          </c:otherwise>
+        </c:choose>
+      </div>
+    </div>
 </div>
 
 <%@ include file="/WEB-INF/components/footer.jsp" %>
 
 <script>
+  function togglePublicKeyBox() {
+    const keyBox = document.getElementById("publicKeyBox");
+    const passBox = document.getElementById("passwordBox");
 
-  function togglePasswordBox() {
-    const box = document.getElementById("passwordBox");
-    if (box.style.display === "none" || box.style.display === "") {
-      box.style.display = "block";
-      // Tự động cuộn xuống form đổi pass
-      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (keyBox.style.display === "none" || keyBox.style.display === "") {
+      keyBox.style.display = "block";
+      if(passBox) passBox.style.display = "none"; // Ẩn box kia đi
+      keyBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
-      box.style.display = "none";
+      keyBox.style.display = "none";
     }
   }
 
+  function togglePasswordBox() {
+    const passBox = document.getElementById("passwordBox");
+    const keyBox = document.getElementById("publicKeyBox");
 
+    if (passBox.style.display === "none" || passBox.style.display === "") {
+      passBox.style.display = "block";
+      if(keyBox) keyBox.style.display = "none"; // Ẩn box kia đi
+      passBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      passBox.style.display = "none";
+    }
+  }
 
-  // 2. Logic hiện ảnh Avatar ngay khi chọn file
   document.getElementById("avatarInput").addEventListener("change", function (e) {
     const file = e.target.files[0];
     if (file) {
