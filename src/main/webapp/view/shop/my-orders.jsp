@@ -35,23 +35,38 @@
         </c:if>
 
         <div class="order-box" data-status="${tabCategory}">
-            <div class="order-header">
-                <span><strong>Đơn hàng #${order.id}</strong></span>
-                <span class="order-status">
+            <div class="order-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
+                <span style="font-size: 1.1rem;"><strong>Đơn hàng #${order.id}</strong></span>
+
+                <div style="display: flex; gap: 15px; align-items: center;">
+
                     <c:choose>
                         <c:when test="${order.signatureStatus == 'CHO_KY_SO'}">
-                            <span style="color: #ff9800; font-weight: bold;"><i class="fas fa-file-signature"></i> Đang chờ ký xác thực</span>
+                            <span style="color: #ff9800; border: 1px solid #ff9800; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">
+                                <i class="fas fa-file-signature"></i> Đang chờ ký
+                            </span>
                         </c:when>
-                        <c:when test="${order.orderStatus == 'PENDING'}">Chờ xác nhận</c:when>
-                        <c:when test="${order.orderStatus == 'CANCEL_REQUESTED'}">Đang chờ duyệt hủy</c:when>
-                        <c:when test="${order.orderStatus == 'SHIPPING'}">Đang giao hàng</c:when>
-                        <c:when test="${order.orderStatus == 'DELIVERED'}">Đã giao</c:when>
-                        <c:when test="${order.orderStatus == 'RETURN_PENDING'}">Chờ duyệt trả hàng</c:when>
-                        <c:when test="${order.orderStatus == 'RETURNED'}">Đã trả hàng/hoàn tiền</c:when>
-                        <c:when test="${order.orderStatus == 'CANCELLED'}">Đã hủy</c:when>
-                        <c:otherwise>${order.orderStatus}</c:otherwise>
+                        <c:when test="${order.signatureStatus == 'DA_KY'}">
+                            <span style="color: #4CAF50; border: 1px solid #4CAF50; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">
+                                <i class="fas fa-check-circle"></i> Đã ký xác thực
+                            </span>
+                        </c:when>
                     </c:choose>
-                </span>
+
+                    <span style="color: #ee4d2d; font-weight: bold; text-transform: uppercase;">
+                        <c:choose>
+                            <c:when test="${order.orderStatus == 'PENDING'}">Chờ xác nhận</c:when>
+                            <c:when test="${order.orderStatus == 'CANCEL_REQUESTED'}">Đang chờ duyệt hủy</c:when>
+                            <c:when test="${order.orderStatus == 'SHIPPING'}">Đang giao hàng</c:when>
+                            <c:when test="${order.orderStatus == 'DELIVERED'}">Đã giao</c:when>
+                            <c:when test="${order.orderStatus == 'RETURN_PENDING'}">Chờ duyệt trả hàng</c:when>
+                            <c:when test="${order.orderStatus == 'RETURNED'}">Đã trả hàng/hoàn tiền</c:when>
+                            <c:when test="${order.orderStatus == 'CANCELLED'}">Đã hủy</c:when>
+                            <c:otherwise>${order.orderStatus}</c:otherwise>
+                        </c:choose>
+                    </span>
+
+                </div>
             </div>
 
             <c:forEach var="item" items="${order.items}">
