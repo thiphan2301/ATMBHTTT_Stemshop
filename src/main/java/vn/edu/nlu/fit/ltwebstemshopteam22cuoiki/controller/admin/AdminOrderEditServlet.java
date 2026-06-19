@@ -71,7 +71,7 @@ public class AdminOrderEditServlet extends HttpServlet {
 
         // Lấy thông tin từ form
         String oldIdStr = request.getParameter("oldId");
-        String idStr = request.getParameter("id");
+        String idStr = request.getParameter("newId");
         String userIdStr = request.getParameter("userId");
         String orderDateStr = request.getParameter("orderDate");
         String receiverName = request.getParameter("receiverName");
