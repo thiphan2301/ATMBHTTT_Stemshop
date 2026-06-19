@@ -97,6 +97,11 @@
                         <option value="asc">Lâu nhất đến mới nhất</option>
                     </select>
                 </div>
+                <div class="filter-item" style="margin-left: auto;">
+                    <button type="button" class="btn-history" onclick="openDetailPopup('${pageContext.request.contextPath}/admin/admin-order-history')">
+                        <i class="fa-solid fa-history"></i> Lịch sử thay đổi
+                    </button>
+                </div>
             </div>
 
             <table class="admin-table">

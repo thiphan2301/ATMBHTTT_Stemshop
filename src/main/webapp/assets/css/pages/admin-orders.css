@@ -115,3 +115,21 @@
     margin-right: 5px;
 }
 .admin-table .btn-edit:hover { background-color: #e0a800; transition: ease .4s; }
+
+.filter-container .btn-history {
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    background-color: #17a2b8;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: ease .4s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.filter-container .btn-history:hover {
+    background-color: #138496;
+}
