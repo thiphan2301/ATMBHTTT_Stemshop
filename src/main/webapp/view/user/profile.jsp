@@ -314,13 +314,12 @@
       </div>
     </form>
   </div>
-
 </div>
 
 <%@ include file="/WEB-INF/components/footer.jsp" %>
 
 <script>
-  // 1. Logic ẩn/hiện form đổi pass mượt mà (Không làm ẩn nút Lưu nữa)
+
   function togglePasswordBox() {
     const box = document.getElementById("passwordBox");
     if (box.style.display === "none" || box.style.display === "") {
@@ -331,6 +330,8 @@
       box.style.display = "none";
     }
   }
+
+
 
   // 2. Logic hiện ảnh Avatar ngay khi chọn file
   document.getElementById("avatarInput").addEventListener("change", function (e) {

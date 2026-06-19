@@ -42,3 +42,4 @@ build/
 local.properties
 
 src/main/resources/system.properties
+src/main/resources/db.properties
