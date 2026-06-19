@@ -132,13 +132,12 @@ public class OrderDAO {
     public Order getOrderById(int orderId) throws Exception {
         Order order = null;
         String sqlOrder = "SELECT * FROM orders WHERE ID = ?";
-        // Dùng MAX() là cách an toàn và tương thích mọi phiên bản MySQL nhất
         String sqlItems = "SELECT od.ProductID, p.ProductName, MAX(pi.ImageURL) AS ImageURL, od.Quantity, od.Price " +
                 "FROM order_detail od " +
                 "JOIN products p ON od.ProductID = p.ID " +
                 "LEFT JOIN product_image pi ON p.ID = pi.ProductID " +
                 "WHERE od.OrderID = ? " +
-                "GROUP BY p.ID";
+                "GROUP BY od.ProductID, p.ProductName, od.Quantity, od.Price";
 
         try (Connection conn = ConnectionDB.getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement(sqlOrder)) {
@@ -230,12 +229,12 @@ public class OrderDAO {
     // Thêm method riêng để lấy sản phẩm theo orderId
     private List<OrderItem> getOrderItemsByOrderId(int orderId) {
         List<OrderItem> items = new ArrayList<>();
-        String sqlItems = "SELECT od.ProductID, p.ProductName, pi.ImageURL, od.Quantity, od.Price " +
+        String sqlItems = "SELECT od.ProductID, p.ProductName, MAX(pi.ImageURL) AS ImageURL, od.Quantity, od.Price " +
                 "FROM order_detail od " +
                 "JOIN products p ON od.ProductID = p.ID " +
                 "LEFT JOIN product_image pi ON p.ID = pi.ProductID " +
                 "WHERE od.OrderID = ? " +
-                "GROUP BY p.ID";
+                "GROUP BY od.ProductID, p.ProductName, od.Quantity, od.Price";
 
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement psItem = conn.prepareStatement(sqlItems)) {
@@ -481,6 +480,89 @@ public class OrderDAO {
             ps.setString(2, status);
             ps.setInt(3, orderId);
             ps.executeUpdate();
+        }
+    }
+
+    public boolean updateOrderAdmin(int oldId, int newId, int userId, Timestamp orderDate, String receiverName, String receiverPhone, String shippingAddress, double totalAmount, double shippingFee, int paymentMethodId) throws Exception {
+        Connection conn = null;
+        PreparedStatement psOrder = null;
+        PreparedStatement psDetail = null;
+        PreparedStatement psPromo = null;
+        PreparedStatement psPayment = null;
+        Statement stmtFKDisable = null;
+        Statement stmtFKEnable = null;
+
+        try {
+            conn = ConnectionDB.getConnection();
+            conn.setAutoCommit(false);
+
+            // 1. Tắt foreign key checks
+            stmtFKDisable = conn.createStatement();
+            stmtFKDisable.execute("SET FOREIGN_KEY_CHECKS = 0");
+
+            // 2. Cập nhật bảng orders
+            String sqlOrder = "UPDATE orders SET ID = ?, UserID = ?, OrderDate = ?, ReceiverName = ?, ReceiverPhone = ?, ShippingAddress = ?, TotalAmount = ?, ShippingFee = ?, payment_method_id = ? WHERE ID = ?";
+            psOrder = conn.prepareStatement(sqlOrder);
+            psOrder.setInt(1, newId);
+            psOrder.setInt(2, userId);
+            psOrder.setTimestamp(3, orderDate);
+            psOrder.setString(4, receiverName);
+            psOrder.setString(5, receiverPhone);
+            psOrder.setString(6, shippingAddress);
+            psOrder.setDouble(7, totalAmount);
+            psOrder.setDouble(8, shippingFee);
+            psOrder.setInt(9, paymentMethodId);
+            psOrder.setInt(10, oldId);
+            int updatedRows = psOrder.executeUpdate();
+
+            if (updatedRows > 0) {
+                // 3. Nếu ID thay đổi, cập nhật các bảng liên quan
+                if (oldId != newId) {
+                    String sqlDetail = "UPDATE order_detail SET OrderID = ? WHERE OrderID = ?";
+                    psDetail = conn.prepareStatement(sqlDetail);
+                    psDetail.setInt(1, newId);
+                    psDetail.setInt(2, oldId);
+                    psDetail.executeUpdate();
+
+                    String sqlPromo = "UPDATE order_promotions SET order_id = ? WHERE order_id = ?";
+                    psPromo = conn.prepareStatement(sqlPromo);
+                    psPromo.setInt(1, newId);
+                    psPromo.setInt(2, oldId);
+                    psPromo.executeUpdate();
+
+                    String sqlPayment = "UPDATE payments SET OrderID = ? WHERE OrderID = ?";
+                    psPayment = conn.prepareStatement(sqlPayment);
+                    psPayment.setInt(1, newId);
+                    psPayment.setInt(2, oldId);
+                    psPayment.executeUpdate();
+                }
+
+                // 4. Bật lại foreign key checks và commit
+                stmtFKEnable = conn.createStatement();
+                stmtFKEnable.execute("SET FOREIGN_KEY_CHECKS = 1");
+                conn.commit();
+                return true;
+            } else {
+                conn.rollback();
+                return false;
+            }
+        } catch (Exception e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw e;
+        } finally {
+            if (psOrder != null) psOrder.close();
+            if (psDetail != null) psDetail.close();
+            if (psPromo != null) psPromo.close();
+            if (psPayment != null) psPayment.close();
+            if (stmtFKDisable != null) stmtFKDisable.close();
+            if (stmtFKEnable != null) stmtFKEnable.close();
+            if (conn != null) conn.close();
         }
     }
 
