@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.OrderDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.UserDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.Order;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -145,7 +146,10 @@ public class AdminOrderEditServlet extends HttpServlet {
                 return;
             }
 
-            boolean isUpdated = orderDAO.updateOrderAdmin(oldId, newId, userId, orderTimestamp, receiverName, receiverPhone, shippingAddress, totalAmount, shippingFee, paymentMethodId);
+            User currentUser = (User) session.getAttribute("user");
+            Integer actorId = currentUser != null ? currentUser.getId() : null;
+            String actorName = currentUser != null ? currentUser.getUserName() : null;
+            boolean isUpdated = orderDAO.updateOrderAdmin(oldId, newId, userId, orderTimestamp, receiverName, receiverPhone, shippingAddress, totalAmount, shippingFee, paymentMethodId, actorId, actorName);
 
             if (isUpdated) {
                 session.setAttribute("message", "Cập nhật đơn hàng thành công!");
