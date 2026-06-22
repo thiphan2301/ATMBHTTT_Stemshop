@@ -65,7 +65,7 @@ public class UserKey {
         this.revokedAt = revokedAt;
     }
 
-    public String formatStringPublicKey() {
+    public String getFormatStringPublicKey() {
         if(publicKey == null || publicKey.isEmpty()) return "";
         String pKey = publicKey.trim();
         if (pKey.length() <= 20) return publicKey;
