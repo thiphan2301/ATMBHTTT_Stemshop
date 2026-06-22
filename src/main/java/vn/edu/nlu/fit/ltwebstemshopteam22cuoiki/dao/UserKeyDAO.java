@@ -1,11 +1,14 @@
 package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao;
 
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.config.ConnectionDB;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.UserKey;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserKeyDAO {
 
@@ -39,7 +42,9 @@ public class UserKeyDAO {
                     return rs.getInt(1) > 0;
                 }
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -51,7 +56,9 @@ public class UserKeyDAO {
             ps.setInt(1, userId);
             ps.setString(2, newPublicKey);
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -62,7 +69,29 @@ public class UserKeyDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return false;
+    }
+
+    public List<UserKey> getKeyHistoryByUserId(int userId) {
+        List<UserKey> list = new ArrayList<>();
+        String sql = "SELECT * FROM user_keys WHERE user_id = ? ORDER BY key_created_at DESC";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+             ps.setInt(1, userId);
+             ResultSet rs = ps.executeQuery();
+             while (rs.next()) {
+                list.add(new UserKey(rs.getInt("id"),
+                                     rs.getInt("user_id"),
+                                     rs.getString("public_key"),
+                                     rs.getTimestamp("key_created_at"),
+                                     rs.getTimestamp("key_revoked_at")));
+             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return list;
     }
 }
