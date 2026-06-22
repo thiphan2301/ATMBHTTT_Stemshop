@@ -11,6 +11,14 @@ public class UserKey {
 
     public UserKey(){}
 
+    public UserKey(int id, int userId, String publicKey, Timestamp createdAt, Timestamp revokedAt) {
+        this.id = id;
+        this.userId = userId;
+        this.publicKey = publicKey;
+        this.createdAt = createdAt;
+        this.revokedAt = revokedAt;
+    }
+
     public UserKey(int id, int userId, String publicKey) {
         this.id = id;
         this.userId = userId;
@@ -55,5 +63,18 @@ public class UserKey {
 
     public void setRevokedAt(Timestamp revokedAt) {
         this.revokedAt = revokedAt;
+    }
+
+    public String getFormatStringPublicKey() {
+        if(publicKey == null || publicKey.isEmpty()) return "";
+        String pKey = publicKey.trim();
+        if (pKey.length() <= 20) return publicKey;
+        String first = pKey.substring(0, 10);
+        String last = pKey.substring(pKey.length() - 10);
+        return first + "...." + last;
+    }
+
+    public boolean isActiveKey() {
+        return this.revokedAt == null;
     }
 }
