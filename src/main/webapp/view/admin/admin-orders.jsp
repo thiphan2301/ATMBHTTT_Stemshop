@@ -59,6 +59,22 @@
         </header>
 
         <section class="admin-page admin-page--active">
+            <div style="margin-top: 10px; margin-bottom: 15px;">
+                <c:if test="${not empty sessionScope.message}">
+                    <div style="padding: 12px 20px; background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; border-radius: 8px; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <i class="fa-solid fa-circle-check"></i> ${sessionScope.message}
+                    </div>
+                    <c:remove var="message" scope="session" />
+                </c:if>
+
+                <c:if test="${not empty sessionScope.error}">
+                    <div style="padding: 12px 20px; background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; border-radius: 8px; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <i class="fa-solid fa-circle-exclamation"></i> ${sessionScope.error}
+                    </div>
+                    <c:remove var="error" scope="session" />
+                </c:if>
+            </div>
+
             <div class="filter-container">
                 <div class="filter-item">
                     <label for="searchInput"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm:</label>
@@ -81,6 +97,9 @@
                         <option value="asc">Lâu nhất đến mới nhất</option>
                     </select>
                 </div>
+                <button type="button" class="btn-history" onclick="location.href='${pageContext.request.contextPath}/admin/admin-order-history'">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử thay đổi
+                </button>
             </div>
 
             <table class="admin-table">
@@ -160,11 +179,23 @@
                                 </c:if>
                             </c:if>
 
-                            <button type="button" class="btn-detail" onclick="openDetailPopup('${pageContext.request.contextPath}/orderDetails?id=${o.id}')">
+                            <button type="button" class="btn-edit" onclick="location.href='${pageContext.request.contextPath}/admin/admin-order-edit?id=${o.id}'">
+                                Sửa
+                            </button>
+                            <button type="button" class="btn-detail" onclick="openDetailPopup('${pageContext.request.contextPath}/orderDetails?id=${o.id}&source=admin')">
                                 Chi tiết
                             </button>
                         </td>
                     </tr>
+
+                    <c:if test="${o.tampered}">
+                        <tr style="background-color: #fff0f0;">
+                            <td colspan="6" style="color: #d93838; padding: 10px; font-weight: bold; text-align: center; border: 1px solid #ffcccc;">
+                                <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.2rem; margin-right: 5px;"></i>
+                                CẢNH BÁO: Dữ liệu của Đơn hàng #${o.id} đã bị thay đổi sau khi ký!
+                            </td>
+                        </tr>
+                    </c:if>
                 </c:forEach>
                 </tbody>
             </table>

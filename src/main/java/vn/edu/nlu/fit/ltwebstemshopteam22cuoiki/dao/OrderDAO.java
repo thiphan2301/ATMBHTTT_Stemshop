@@ -72,13 +72,13 @@ public class OrderDAO {
     public List<Order> getAllOrdersForAdmin() {
         List<Order> list = new ArrayList<>();
         String sql = "SELECT o.*, u.FullName, u.PhoneNumber " +
-                "FROM orders o " +
-                "JOIN users u ON o.UserID = u.ID " +
-                "ORDER BY o.OrderDate DESC";
+                "FROM orders o JOIN users u ON o.UserID = u.ID ORDER BY o.OrderDate DESC";
 
         try (Connection con = ConnectionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
+
+            UserDAO userDAO = new UserDAO(); // Gọi UserDAO để lấy khóa
 
             while (rs.next()) {
                 Order o = new Order();
@@ -95,6 +95,19 @@ public class OrderDAO {
                 o.setUserPhone(rs.getString("PhoneNumber"));
                 o.setPaymentMethodId(rs.getInt("payment_method_id"));
                 o.setPaymentStatus(rs.getString("payment_status"));
+                o.setSignatureStatus(rs.getString("signature_status"));
+                o.setSignature(rs.getString("signature"));
+
+                // Kiểm tra gian lận
+                o.setTampered(false); // Mặc định là an toàn
+                if ("DA_KY".equals(o.getSignatureStatus())) {
+                    String rawData = generateRawData(o);
+                    String publicKey = userDAO.getPublicKey(o.getUserId());
+                    if (publicKey == null || o.getSignature() == null || !vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.RSAUtil.verify(rawData, o.getSignature(), publicKey)) {
+                        o.setTampered(true); 
+                    }
+                }
+
                 list.add(o);
             }
         } catch (Exception e) {
@@ -102,12 +115,16 @@ public class OrderDAO {
         }
         return list;
     }
-
     // 5. Cập nhật trạng thái đơn hàng
     public void updateOrderStatus(int orderId, String status) {
+        updateOrderStatus(orderId, status, null, null);
+    }
+
+    public void updateOrderStatus(int orderId, String status, Integer actorId, String actorName) {
         String sql = "UPDATE orders SET OrderStatus=? WHERE ID=?";
         try (Connection con = ConnectionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
+            setAuditActor(con, actorId, actorName);
             ps.setString(1, status);
             ps.setInt(2, orderId);
             ps.executeUpdate();
@@ -120,13 +137,12 @@ public class OrderDAO {
     public Order getOrderById(int orderId) throws Exception {
         Order order = null;
         String sqlOrder = "SELECT * FROM orders WHERE ID = ?";
-        // Dùng MAX() là cách an toàn và tương thích mọi phiên bản MySQL nhất
         String sqlItems = "SELECT od.ProductID, p.ProductName, MAX(pi.ImageURL) AS ImageURL, od.Quantity, od.Price " +
                 "FROM order_detail od " +
                 "JOIN products p ON od.ProductID = p.ID " +
                 "LEFT JOIN product_image pi ON p.ID = pi.ProductID " +
                 "WHERE od.OrderID = ? " +
-                "GROUP BY p.ID";
+                "GROUP BY od.ProductID, p.ProductName, od.Quantity, od.Price";
 
         try (Connection conn = ConnectionDB.getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement(sqlOrder)) {
@@ -218,12 +234,12 @@ public class OrderDAO {
     // Thêm method riêng để lấy sản phẩm theo orderId
     private List<OrderItem> getOrderItemsByOrderId(int orderId) {
         List<OrderItem> items = new ArrayList<>();
-        String sqlItems = "SELECT od.ProductID, p.ProductName, pi.ImageURL, od.Quantity, od.Price " +
+        String sqlItems = "SELECT od.ProductID, p.ProductName, MAX(pi.ImageURL) AS ImageURL, od.Quantity, od.Price " +
                 "FROM order_detail od " +
                 "JOIN products p ON od.ProductID = p.ID " +
                 "LEFT JOIN product_image pi ON p.ID = pi.ProductID " +
                 "WHERE od.OrderID = ? " +
-                "GROUP BY p.ID";
+                "GROUP BY od.ProductID, p.ProductName, od.Quantity, od.Price";
 
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement psItem = conn.prepareStatement(sqlItems)) {
@@ -437,9 +453,14 @@ public class OrderDAO {
 
     // ập nhật trạng thái thành Đang Giao và lưu Mã Vận Đơn
     public void updateStatusAndTrackingCode(int orderId, String status, String trackingCode) {
+        updateStatusAndTrackingCode(orderId, status, trackingCode, null, null);
+    }
+
+    public void updateStatusAndTrackingCode(int orderId, String status, String trackingCode, Integer actorId, String actorName) {
         String sql = "UPDATE orders SET OrderStatus = ?, tracking_code = ? WHERE ID = ?";
         try (Connection con = ConnectionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
+            setAuditActor(con, actorId, actorName);
             ps.setString(1, status);
             ps.setString(2, trackingCode);
             ps.setInt(3, orderId);
@@ -471,4 +492,117 @@ public class OrderDAO {
             ps.executeUpdate();
         }
     }
+
+    public boolean updateOrderAdmin(int oldId, int newId, int userId, Timestamp orderDate, String receiverName, String receiverPhone, String shippingAddress, double totalAmount, double shippingFee, int paymentMethodId) throws Exception {
+        return updateOrderAdmin(oldId, newId, userId, orderDate, receiverName, receiverPhone, shippingAddress, totalAmount, shippingFee, paymentMethodId, null, null);
+    }
+
+    public boolean updateOrderAdmin(int oldId, int newId, int userId, Timestamp orderDate, String receiverName, String receiverPhone, String shippingAddress, double totalAmount, double shippingFee, int paymentMethodId, Integer actorId, String actorName) throws Exception {
+        Connection conn = null;
+        PreparedStatement psOrder = null;
+        PreparedStatement psDetail = null;
+        PreparedStatement psPromo = null;
+        PreparedStatement psPayment = null;
+        Statement stmtFKDisable = null;
+        Statement stmtFKEnable = null;
+
+        try {
+            conn = ConnectionDB.getConnection();
+            conn.setAutoCommit(false);
+            setAuditActor(conn, actorId, actorName);
+
+            // 1. Tắt foreign key checks
+            stmtFKDisable = conn.createStatement();
+            stmtFKDisable.execute("SET FOREIGN_KEY_CHECKS = 0");
+
+            // 2. Cập nhật bảng orders
+            String sqlOrder = "UPDATE orders SET ID = ?, UserID = ?, OrderDate = ?, ReceiverName = ?, ReceiverPhone = ?, ShippingAddress = ?, TotalAmount = ?, ShippingFee = ?, payment_method_id = ? WHERE ID = ?";
+            psOrder = conn.prepareStatement(sqlOrder);
+            psOrder.setInt(1, newId);
+            psOrder.setInt(2, userId);
+            psOrder.setTimestamp(3, orderDate);
+            psOrder.setString(4, receiverName);
+            psOrder.setString(5, receiverPhone);
+            psOrder.setString(6, shippingAddress);
+            psOrder.setDouble(7, totalAmount);
+            psOrder.setDouble(8, shippingFee);
+            psOrder.setInt(9, paymentMethodId);
+            psOrder.setInt(10, oldId);
+            int updatedRows = psOrder.executeUpdate();
+
+            if (updatedRows > 0) {
+                // 3. Nếu ID thay đổi, cập nhật các bảng liên quan
+                if (oldId != newId) {
+                    String sqlDetail = "UPDATE order_detail SET OrderID = ? WHERE OrderID = ?";
+                    psDetail = conn.prepareStatement(sqlDetail);
+                    psDetail.setInt(1, newId);
+                    psDetail.setInt(2, oldId);
+                    psDetail.executeUpdate();
+
+                    String sqlPromo = "UPDATE order_promotions SET order_id = ? WHERE order_id = ?";
+                    psPromo = conn.prepareStatement(sqlPromo);
+                    psPromo.setInt(1, newId);
+                    psPromo.setInt(2, oldId);
+                    psPromo.executeUpdate();
+
+                    String sqlPayment = "UPDATE payments SET OrderID = ? WHERE OrderID = ?";
+                    psPayment = conn.prepareStatement(sqlPayment);
+                    psPayment.setInt(1, newId);
+                    psPayment.setInt(2, oldId);
+                    psPayment.executeUpdate();
+                }
+
+                // 4. Bật lại foreign key checks và commit
+                stmtFKEnable = conn.createStatement();
+                stmtFKEnable.execute("SET FOREIGN_KEY_CHECKS = 1");
+                conn.commit();
+                return true;
+            } else {
+                conn.rollback();
+                return false;
+            }
+        } catch (Exception e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw e;
+        } finally {
+            if (psOrder != null) psOrder.close();
+            if (psDetail != null) psDetail.close();
+            if (psPromo != null) psPromo.close();
+            if (psPayment != null) psPayment.close();
+            if (stmtFKDisable != null) stmtFKDisable.close();
+            if (stmtFKEnable != null) stmtFKEnable.close();
+            if (conn != null) conn.close();
+        }
+    }
+
+    private void setAuditActor(Connection conn, Integer actorId, String actorName) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("SET @app_actor_id = ?, @app_actor_name = ?, @app_source = ?")) {
+            if (actorId == null) {
+                ps.setNull(1, Types.INTEGER);
+            } else {
+                ps.setInt(1, actorId);
+            }
+            ps.setString(2, actorName);
+            ps.setString(3, actorName == null ? "JAVA_APP" : "JAVA_APP:" + actorName);
+            ps.executeUpdate();
+        }
+    }
+
+    //Lấy dl chuỗi đơn hàng
+    private String generateRawData(Order order) {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = order.getOrderDate() != null ? sdf.format(order.getOrderDate()) : "";
+        return "ID=" + order.getId() + "|UserID=" + order.getUserId() + "|Date=" + formattedDate +
+                "|Receiver=" + order.getReceiverName() + "|Phone=" + order.getReceiverPhone() +
+                "|Address=" + order.getShippingAddress() + "|Total=" + (long) order.getTotalAmount() +
+                "|ShipFee=" + (long) order.getShippingFee() + "|PayMethod=" + order.getPaymentMethodId();
+    }
+
+
 }

@@ -70,7 +70,15 @@
 <body>
 
 <div class="app-container">
-
+    <c:if test="${isTampered && param.source == 'admin'}">
+        <div style="background-color: #fff5f5; border: 2px solid #ff4d4d; color: #d93838; padding: 15px; margin: 15px; border-radius: 6px; font-family: Arial, sans-serif; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; color: #ff4d4d;"></i>
+            <div>
+                <strong style="font-size: 1.1rem; display: block; margin-bottom: 4px;">🚨 CẢNH BÁO BẢO MẬT: DỮ LIỆU ĐÃ BỊ THAY ĐỔI TRÁI PHÉP!</strong>
+                <span style="font-size: 0.95rem;">Đơn hàng này không còn giữ được tính toàn vẹn gốc sau khi khách hàng thực hiện ký số. Có dấu hiệu chỉnh sửa cơ sở dữ liệu!</span>
+            </div>
+        </div>
+    </c:if>
   <div class="header-top">
     <span>Thông tin đơn hàng #${order.id}</span>
   </div>

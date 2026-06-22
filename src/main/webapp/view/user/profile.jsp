@@ -520,7 +520,6 @@
             </div>
         </form>
     </div>
-
     <div class="password-section" id="publicKeyBox"
          style="display: ${sessionScope.errorPublicKey eq 'show' ? 'block' : 'none'};">
         <h3><i class="fa-solid fa-key" style="color: var(--primary);"></i> Quản Lý Khóa Công Khai (Public Key)</h3>
@@ -584,6 +583,12 @@
                         </form>
                     </c:otherwise>
                 </c:choose>
+
+            <div style="margin-top: 15px;">
+              <a href="${pageContext.request.contextPath}/revoke-key" class="btn" style="background-color: #c62828; color: white;"
+                 onclick="return confirm('Bạn có chắc chắn muốn yêu cầu báo mất khóa này không? Sau khi xác nhận bạn sẽ không thể dùng nó để ký đơn hàng nữa!');">
+                <i class="fa-solid fa-trash-can"></i> Báo Mất Khóa
+              </a>
             </div>
             <c:if test="${not empty listKey}">
                 <div class="form-group full-width"
@@ -648,6 +653,9 @@
             </c:if>
         </div>
     </div>
+
+</div>
+</div>
 
     <%@ include file="/WEB-INF/components/footer.jsp" %>
 
