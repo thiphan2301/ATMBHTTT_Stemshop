@@ -327,7 +327,6 @@
           <%-- TRƯỜNG HỢP 1: ĐÃ CÓ KEY ACTIVE --%>
           <c:when test="${not empty publicKey}">
             <span style="color: #2e7d32; font-weight: bold; font-size: 15px;"><i class="fa-solid fa-circle-check"></i> Đã cấu hình</span>
-
             <div style="margin-top: 15px; padding: 15px; background: #e8f5e9; border-radius: 6px; border: 1px solid #c8e6c9;">
               <p style="margin: 0 0 10px 0; font-size: 14px; color: #1b5e20;">
                 <strong>Khóa hiện tại của bạn đang hoạt động.</strong> Để bảo mật, bạn không thể thêm khóa mới đè lên khóa cũ.
@@ -361,7 +360,7 @@
               <div class="form-group full-width" style="margin-top: 15px;">
                 <label>Hoặc dán nội dung Public Key trực tiếp</label>
                 <textarea name="publicKeyText" class="form-control" rows="6"
-                          placeholder="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgK..."
+                          placeholder="Nội dung khóa..."
                           style="font-family: monospace; font-size: 13px; resize: vertical;"></textarea>
               </div>
 

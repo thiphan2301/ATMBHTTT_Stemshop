@@ -7,6 +7,7 @@ import jakarta.servlet.http.*;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.UserDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.UserKeyDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.UserKey;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.AppConfig;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.EmailUtils;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.PasswordUtils;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.sql.Date;
+import java.util.List;
 
 @WebServlet("/profile")
 @MultipartConfig
@@ -33,6 +35,9 @@ public class ProfileServlet extends HttpServlet {
         UserKeyDAO dao = new UserKeyDAO();
         String publicKey = dao.getPublicKey(user.getId());
         request.setAttribute("publicKey", publicKey);
+
+        List<UserKey> keyList = dao.getKeyHistoryByUserId(user.getId());
+        request.setAttribute("listKey", keyList);
 
         // Kiểm tra nếu là admin, thêm flag
         request.setAttribute("isAdmin", "admin".equalsIgnoreCase(user.getRole()));
