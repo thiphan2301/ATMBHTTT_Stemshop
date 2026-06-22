@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.OrderDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.Order;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.GHNService;
 
 import java.io.IOException;
@@ -35,6 +36,9 @@ public class AdminOrderServlet extends HttpServlet {
             OrderDAO orderDAO = new OrderDAO();
             int orderId = Integer.parseInt(request.getParameter("orderId"));
             String action = request.getParameter("action");
+            User currentUser = (User) request.getSession().getAttribute("user");
+            Integer actorId = currentUser != null ? currentUser.getId() : null;
+            String actorName = currentUser != null ? currentUser.getUserName() : null;
 
             if ("confirm".equals(action)) {
                 // 1. Lấy thông tin đơn hàng đầy đủ từ DB
@@ -46,7 +50,7 @@ public class AdminOrderServlet extends HttpServlet {
 
                     if (trackingCode != null) {
                         // 3. Nếu đẩy thành công, cập nhật trạng thái đơn và lưu Mã Vận Đơn
-                        orderDAO.updateStatusAndTrackingCode(orderId, "SHIPPING", trackingCode);
+                        orderDAO.updateStatusAndTrackingCode(orderId, "SHIPPING", trackingCode, actorId, actorName);
                         request.getSession().setAttribute("message", "Duyệt đơn và đẩy sang GHN thành công! Mã vận đơn: " + trackingCode);
                     } else {
                         // Xử lý lỗi nếu GHN từ chối (VD: Sai số điện thoại, địa chỉ ko hợp lệ)
@@ -57,7 +61,7 @@ public class AdminOrderServlet extends HttpServlet {
                 }
 
             } else if ("cancel".equals(action)) {
-                orderDAO.updateOrderStatus(orderId, "CANCELLED");
+                orderDAO.updateOrderStatus(orderId, "CANCELLED", actorId, actorName);
                 request.getSession().setAttribute("message", "Đã hủy đơn hàng thành công!");
             }
 

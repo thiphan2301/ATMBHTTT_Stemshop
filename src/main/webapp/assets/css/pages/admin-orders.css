@@ -67,6 +67,49 @@
 .filter-item input:focus, .filter-item select:focus {
     border-color: #4CAF50;
 }
+
+.btn-history {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    background-color: #2563eb;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.btn-history:hover {
+    background-color: #1d4ed8;
+    transition: ease .4s;
+}
+
+.order-history-table th,
+.order-history-table td {
+    vertical-align: middle;
+    padding: 10px 12px;
+}
+
+.order-history-table th:first-child,
+.order-history-table td:first-child {
+    white-space: nowrap;
+    width: 180px;
+    min-width: 170px;
+    padding-right: 15px;
+}
+
+.history-value {
+    max-width: 240px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.empty-history {
+    padding: 18px;
+    text-align: center;
+    color: #777;
+    font-weight: 600;
+}
      /* Giao diện Modal */
  .custom-modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; background-color: rgba(0,0,0,0.6); }
 .modal-content { background-color: #f4f6f8; margin: 2% auto; padding: 15px 20px; border: none; width: 85%; max-width: 900px; height: 85vh; border-radius: 8px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
@@ -104,3 +147,14 @@
     cursor: pointer;
 }
 .admin-table .btn-detail:hover { background-color: #c9c018; transition: ease .4s; }
+
+.admin-table .btn-edit {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #ffc107;
+    color: white;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.admin-table .btn-edit:hover { background-color: #e0a800; transition: ease .4s; }
