@@ -38,32 +38,31 @@
             <div class="order-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
                 <span style="font-size: 1.1rem;"><strong>Đơn hàng #${order.id}</strong></span>
 
-                <div style="display: flex; gap: 15px; align-items: center;">
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
 
                     <c:choose>
-                        <%-- 1. Đang chờ ký (Đơn chưa hủy) --%>
+                        <%-- Trường hợp 1: Đang chờ ký --%>
                         <c:when test="${order.signatureStatus == 'CHO_KY_SO' && order.orderStatus != 'CANCELLED'}">
                             <span style="color: #ff9800; border: 1px solid #ff9800; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">
                                 <i class="fas fa-file-signature"></i> Đang chờ ký
                             </span>
                         </c:when>
 
-                        <%-- 2. Đã ký VÀ dữ liệu an toàn --%>
-                        <c:when test="${order.signatureStatus == 'DA_KY' && !order.tampered}">
+                        <%-- Trường hợp 2: Đã ký (Bao gồm cả việc có bị sửa dữ liệu hay không) --%>
+                        <c:when test="${order.signatureStatus == 'DA_KY'}">
                             <span style="color: #4CAF50; border: 1px solid #4CAF50; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">
                                 <i class="fas fa-check-circle"></i> Đã ký xác thực
                             </span>
+
+                            <c:if test="${order.tampered}">
+                                <span style="color: #d93838; border: 1px solid #ff4d4d; background-color: #fff0f0; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;"
+                                      title="Cảnh báo: Dữ liệu hiện tại hiển thị không khớp với chữ ký số ban đầu của bạn!">
+                                    <i class="fas fa-triangle-exclamation"></i> Dữ liệu bị thay đổi trái phép!
+                                </span>
+                            </c:if>
                         </c:when>
 
-                        <%-- 3. Đã ký NHƯNG dữ liệu bị sửa đổi --%>
-                        <c:when test="${order.signatureStatus == 'DA_KY' && order.tampered}">
-                            <span style="color: #d93838; border: 1px solid #ff4d4d; background-color: #fff0f0; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;"
-                                  title="Dữ liệu đơn hàng không còn khớp với chữ ký ban đầu của bạn!">
-                                <i class="fas fa-ban"></i> Chữ ký mất hiệu lực (Dữ liệu lỗi)
-                            </span>
-                        </c:when>
-
-                        <%-- 4. KÝ THẤT BẠI (Do hủy đơn hoặc quá hạn) --%>
+                        <%-- Trường hợp 3: Ký thất bại hoặc đơn bị hủy --%>
                         <c:when test="${order.signatureStatus == 'DA_HUY' || order.orderStatus == 'CANCELLED'}">
                             <span style="color: #757575; border: 1px solid #9e9e9e; background-color: #f5f5f5; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">
                                 <i class="fas fa-file-excel"></i> Ký xác thực thất bại
@@ -119,7 +118,7 @@
                             <i class="fas fa-pen-nib"></i> Ký xác nhận ngay
                         </button>
 
-                        <button class="action-btn btn-red" onclick="cancelOrder('${order.id}')">Hủy đơn</button>
+                        <button id="btn-cancel-${order.id}" class="action-btn btn-red" onclick="cancelOrder('${order.id}')">Hủy đơn</button>
                     </c:when>
 
                     <c:otherwise>
@@ -181,13 +180,24 @@
                     // Ẩn nút ký đi vì đã hết hạn
                     document.getElementById('btn-sign-' + orderId).style.display = 'none';
 
-                    // GỌI API NGẦM ĐỂ HỦY ĐƠN TRONG DATABASE (Nếu bạn muốn tự động hóa)
-                    // fetch('${pageContext.request.contextPath}/cancelOrder?id=' + orderId + '&type=auto');
+                    // Ẩn nút Hủy đơn (vì ko ký đơn sẽ hủy, ko cần nhấn hủy nữa)
+                    let btnCancel = document.getElementById('btn-cancel-' + orderId);
+                    if(btnCancel) btnCancel.style.display = 'none';
+
+                    // GỌI API NGẦM ĐỂ HỦY ĐƠN TRONG DATABASE
+                    fetch('${pageContext.request.contextPath}/cancelOrder?id=' + orderId + '&type=auto')
+                        .then(response => {
+                            // Chờ 1.5 giây để DB cập nhật xong rồi tự động F5 lại trang
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 1500);
+                        })
+                        .catch(error => console.error('Lỗi khi hủy ngầm:', error));
                 } else {
                     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    timer.innerHTML = "⏳ Hạn ký còn: " + hours + "h " + minutes + "m " + seconds + "s";
+                    timer.innerHTML = "Hạn ký còn: " + hours + "h " + minutes + "m " + seconds + "s";
                 }
             }, 1000);
         });

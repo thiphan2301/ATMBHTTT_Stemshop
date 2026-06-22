@@ -70,7 +70,7 @@ public class VerifySignatureServlet extends HttpServlet {
             String publicKey = userDAO.getPublicKey(order.getUserId());
 
             if (publicKey == null || publicKey.isEmpty()) {
-                req.setAttribute("error", "Tài khoản của bạn chưa đăng ký Public Key trên hệ thống!");
+                req.setAttribute("error", "Tài khoản của bạn chưa đăng ký Public Key trên hệ thống hoặc đã báo mất khóa mà chưa thêm khóa mới!");
                 req.setAttribute("order", order);
                 req.setAttribute("rawOrderData", rawData);
                 req.getRequestDispatcher("/view/shop/verify-signature.jsp").forward(req, resp);

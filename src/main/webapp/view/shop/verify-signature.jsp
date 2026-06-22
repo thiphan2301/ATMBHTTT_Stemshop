@@ -9,13 +9,33 @@
     <style>
         .verify-container { width: 50%; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; font-family: Arial, sans-serif;}
         .form-group { margin-bottom: 20px; }
-        textarea { width: 100%; padding: 10px; font-family: monospace; font-size: 14px; }
+        textarea { width: 100%; padding: 10px; font-family: monospace; font-size: 14px; margin-bottom: 1rem;}
         .btn-copy, .btn-submit { padding: 10px 20px; background-color: #ff6600; color: white; border: none; cursor: pointer; border-radius: 5px;}
         .error-msg { color: red; font-weight: bold; margin-bottom: 15px;}
         .download-link { display: block; margin-top: 20px; text-align: center; color: blue; text-decoration: underline;}
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-back:hover {
+            background: #5e5e5e;
+        }
     </style>
 </head>
 <body>
+<button class="btn-back" onclick="window.location.href='${pageContext.request.contextPath}/my-orders'">
+    <i class="fas fa-arrow-left"></i> Quay lại
+</button>
 <div class="verify-container">
     <h2>Ký Xác Thực Đơn Hàng #${order.id}</h2>
 
@@ -40,7 +60,7 @@
         <button type="submit" class="btn-submit">Xác nhận chữ ký</button>
     </form>
 
-    <a href="${pageContext.request.contextPath}/assets/tools/SignTool.rar" class="download-link"><i class="fa-solid fa-download"></i> Tải Tool Ký Số</a>
+    <a href="${pageContext.request.contextPath}/assets/tools/SignatureTool.zip" class="download-link"><i class="fa-solid fa-download"></i> Tải Tool Ký Số</a>
 </div>
 
 <script>
