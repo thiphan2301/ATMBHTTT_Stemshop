@@ -3,6 +3,7 @@ package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.config.ConnectionDB;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.Order;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.OrderItem;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.RSAUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -203,10 +204,12 @@ public class OrderDAO {
              PreparedStatement psOrders = con.prepareStatement(sqlOrders)) {
             psOrders.setInt(1, userId);
             ResultSet rsOrders = psOrders.executeQuery();
+            UserDAO userDAO = new UserDAO();
 
             while (rsOrders.next()) {
                 Order order = new Order();
                 order.setId(rsOrders.getInt("ID"));
+                order.setUserId(rsOrders.getInt("ID")); // lấy userid để lấy public key của user đó
                 order.setOrderDate(rsOrders.getTimestamp("OrderDate"));
                 order.setOrderStatus(rsOrders.getString("OrderStatus"));
                 order.setShippingFee(rsOrders.getDouble("ShippingFee"));
@@ -218,6 +221,18 @@ public class OrderDAO {
                 order.setPaymentMethodId(rsOrders.getInt("payment_method_id"));
                 order.setSignatureStatus(rsOrders.getString("signature_status"));
                 order.setSignature(rsOrders.getString("signature"));
+                //Kiểm tra dl thay đổi
+                order.setTampered(false); // mặc định an toàn
+                order.setTampered(false); // Mặc định là an toàn
+                if ("DA_KY".equals(order.getSignatureStatus())) {
+                    String rawData = generateRawData(order);
+                    String publicKey = userDAO.getPublicKey(order.getUserId());
+
+                    // Nếu không có khóa Đánh dấu bị sửa đổi
+                    if (publicKey == null || order.getSignature() == null || !RSAUtil.verify(rawData, order.getSignature(), publicKey)) {
+                        order.setTampered(true);
+                    }
+                }
 
                 // LẤY DANH SÁCH SẢN PHẨM CHO ĐƠN HÀNG NÀY
                 List<OrderItem> items = getOrderItemsByOrderId(order.getId());

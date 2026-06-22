@@ -60,7 +60,7 @@
         <button type="submit" class="btn-submit">Xác nhận chữ ký</button>
     </form>
 
-    <a href="${pageContext.request.contextPath}/assets/tools/SignTool.rar" class="download-link"><i class="fa-solid fa-download"></i> Tải Tool Ký Số</a>
+    <a href="${pageContext.request.contextPath}/assets/tools/SignatureTool.zip" class="download-link"><i class="fa-solid fa-download"></i> Tải Tool Ký Số</a>
 </div>
 
 <script>

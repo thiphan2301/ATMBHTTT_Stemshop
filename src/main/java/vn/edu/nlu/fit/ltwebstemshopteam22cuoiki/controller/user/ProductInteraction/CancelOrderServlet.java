@@ -19,15 +19,23 @@ public class CancelOrderServlet extends HttpServlet {
             int orderId = Integer.parseInt(idStr);
             OrderDAO dao = new OrderDAO();
 
-            if ("direct".equals(type)) {
-                // Hủy trực tiếp (chỉ khi PENDING)
+            if ("direct".equals(type) || "auto".equals(type)) {
+                // 1. Cập nhật trạng thái đơn hàng thành Đã Hủy
                 dao.updateOrderStatus(orderId, "CANCELLED");
+
+                // 2. CẬP NHẬT TRẠNG THÁI CHỮ KÝ THÀNH ĐÃ HỦY
+                try {
+                    dao.updateSignatureStatus(orderId, "DA_HUY");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             } else if ("request".equals(type)) {
                 // Yêu cầu hủy (khi đã lấy hàng - CONFIRMED)
                 dao.updateOrderStatus(orderId, "CANCEL_REQUESTED");
             }
         }
-        
+
         response.sendRedirect(request.getContextPath() + "/orders");
     }
 }

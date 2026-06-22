@@ -373,6 +373,14 @@
         </c:choose>
       </div>
     </div>
+      <div style="background-color: #f0f7ff; border: 1px solid #b3d7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: Arial, sans-serif;">
+          <h4 style="margin-top: 0; color: #0056b3; font-size: 16px;"><i class="fa-solid fa-download"></i> Tải Phần Mềm Ký Số Độc Lập (Dành cho Máy tính)</h4>
+          <p style="font-size: 14px; color: #333; margin-bottom: 12px;">Hãy tải công cụ chính thức bên dưới, giải nén và khởi chạy trực tiếp để tạo khóa hoặc ký số đơn hàng.</p>
+
+          <a href="${pageContext.request.contextPath}/assets/tools/SignatureTool.zip" download="SignatureTool.zip" class="btn" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-file-zipper"></i> Tải Tool Ký Số (.ZIP)
+          </a>
+      </div>
 </div>
 </div>
 
