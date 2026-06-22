@@ -112,7 +112,7 @@
 
                 <div class="form-group">
                     <label>ID Đơn hàng (ID):</label>
-                    <input type="number" name="id" value="${order.id}" required>
+                    <input type="number" name="newId" value="${order.id}" required>
                     <small style="color: #d93838; font-weight: 500; display: block; margin-top: 5px;">
                         <i class="fa-solid fa-triangle-exclamation"></i> Chú ý: Việc đổi ID Đơn hàng sẽ đồng bộ mã đơn ở các bảng chi tiết đơn hàng, khuyến mãi và thanh toán.
                     </small>

@@ -117,9 +117,14 @@ public class OrderDAO {
     }
     // 5. Cập nhật trạng thái đơn hàng
     public void updateOrderStatus(int orderId, String status) {
+        updateOrderStatus(orderId, status, null, null);
+    }
+
+    public void updateOrderStatus(int orderId, String status, Integer actorId, String actorName) {
         String sql = "UPDATE orders SET OrderStatus=? WHERE ID=?";
         try (Connection con = ConnectionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
+            setAuditActor(con, actorId, actorName);
             ps.setString(1, status);
             ps.setInt(2, orderId);
             ps.executeUpdate();
@@ -448,9 +453,14 @@ public class OrderDAO {
 
     // ập nhật trạng thái thành Đang Giao và lưu Mã Vận Đơn
     public void updateStatusAndTrackingCode(int orderId, String status, String trackingCode) {
+        updateStatusAndTrackingCode(orderId, status, trackingCode, null, null);
+    }
+
+    public void updateStatusAndTrackingCode(int orderId, String status, String trackingCode, Integer actorId, String actorName) {
         String sql = "UPDATE orders SET OrderStatus = ?, tracking_code = ? WHERE ID = ?";
         try (Connection con = ConnectionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
+            setAuditActor(con, actorId, actorName);
             ps.setString(1, status);
             ps.setString(2, trackingCode);
             ps.setInt(3, orderId);
@@ -484,6 +494,10 @@ public class OrderDAO {
     }
 
     public boolean updateOrderAdmin(int oldId, int newId, int userId, Timestamp orderDate, String receiverName, String receiverPhone, String shippingAddress, double totalAmount, double shippingFee, int paymentMethodId) throws Exception {
+        return updateOrderAdmin(oldId, newId, userId, orderDate, receiverName, receiverPhone, shippingAddress, totalAmount, shippingFee, paymentMethodId, null, null);
+    }
+
+    public boolean updateOrderAdmin(int oldId, int newId, int userId, Timestamp orderDate, String receiverName, String receiverPhone, String shippingAddress, double totalAmount, double shippingFee, int paymentMethodId, Integer actorId, String actorName) throws Exception {
         Connection conn = null;
         PreparedStatement psOrder = null;
         PreparedStatement psDetail = null;
@@ -495,6 +509,7 @@ public class OrderDAO {
         try {
             conn = ConnectionDB.getConnection();
             conn.setAutoCommit(false);
+            setAuditActor(conn, actorId, actorName);
 
             // 1. Tắt foreign key checks
             stmtFKDisable = conn.createStatement();
@@ -563,6 +578,19 @@ public class OrderDAO {
             if (stmtFKDisable != null) stmtFKDisable.close();
             if (stmtFKEnable != null) stmtFKEnable.close();
             if (conn != null) conn.close();
+        }
+    }
+
+    private void setAuditActor(Connection conn, Integer actorId, String actorName) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("SET @app_actor_id = ?, @app_actor_name = ?, @app_source = ?")) {
+            if (actorId == null) {
+                ps.setNull(1, Types.INTEGER);
+            } else {
+                ps.setInt(1, actorId);
+            }
+            ps.setString(2, actorName);
+            ps.setString(3, actorName == null ? "JAVA_APP" : "JAVA_APP:" + actorName);
+            ps.executeUpdate();
         }
     }
 

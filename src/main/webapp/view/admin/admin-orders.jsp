@@ -97,6 +97,9 @@
                         <option value="asc">Lâu nhất đến mới nhất</option>
                     </select>
                 </div>
+                <button type="button" class="btn-history" onclick="location.href='${pageContext.request.contextPath}/admin/admin-order-history'">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử thay đổi
+                </button>
             </div>
 
             <table class="admin-table">
