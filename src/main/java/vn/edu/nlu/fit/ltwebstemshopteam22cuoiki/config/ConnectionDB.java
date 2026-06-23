@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 
 public class ConnectionDB {
     //private static final String URL = "jdbc:mysql://mysql:3306/mystemshop?useSSL=false&serverTimezone=UTC";
-    private static final String URL = "jdbc:mysql://localhost:3306/mystemshop?useSSL=false&serverTimezone=UTC";
+    private static final String URL = "jdbc:mysql://localhost:3306/mystemshop?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh";
     private static final String USER = "root";
     //private static final String PASSWORD = "StemShop@2026!Secure";
     private static final String PASSWORD = "";

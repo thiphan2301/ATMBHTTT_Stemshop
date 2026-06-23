@@ -264,4 +264,56 @@ public class EmailUtils {
             return false;
         }
     }
+
+    /**
+     * @param toEmail Email người nhận
+     * @param confirmLink Đường link chứa token để xác nhận
+     */
+    public static boolean sendRevokeKeyEmail(String toEmail, String confirmLink) {
+        try {
+            // Cấu hình SMTP
+            Properties props = new Properties();
+            props.put("mail.smtp.host", emailConfig.getProperty("mail.smtp.host"));
+            props.put("mail.smtp.port", emailConfig.getProperty("mail.smtp.port"));
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+
+            Session session = Session.getInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(
+                            emailConfig.getProperty("mail.from"),
+                            emailConfig.getProperty("mail.password")
+                    );
+                }
+            });
+
+            String subject = "STEAM SHOP - Xác nhận thu hồi Khóa Bảo Mật (Public Key)";
+            String htmlContent = "<div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>"
+                    + "<h3>Chào bạn,</h3>"
+                    + "<p>Hệ thống STEAM SHOP vừa nhận được yêu cầu thu hồi Khóa số bảo mật trên tài khoản của bạn.</p>"
+                    + "<p>Nếu đúng là bạn thực hiện, vui lòng click vào nút dưới đây để <b>XÁC NHẬN THU HỒI</b>:</p>"
+                    + "<p><a href='" + confirmLink + "' style='padding: 12px 25px; background-color: #ee4d2d; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;'>Xác Nhận Thu Hồi Khóa</a></p>"
+                    + "<p style='color: #d9534f;'><i>Lưu ý: Nếu bạn không yêu cầu hành động này, vui lòng bỏ qua email và khóa của bạn vẫn an toàn.</i></p>"
+                    + "<hr>"
+                    + "<p style='font-size: 12px; color: #777;'>Trân trọng,<br>Đội ngũ STEAM SHOP</p>"
+                    + "</div>";
+
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(emailConfig.getProperty("mail.from")));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+            message.setSubject(subject, "UTF-8");
+            message.setContent(htmlContent, "text/html; charset=UTF-8");
+
+            Transport.send(message);
+            System.out.println("Email thu hồi khóa đã gửi thành công tới: " + toEmail);
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Lỗi gửi email thu hồi khóa: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

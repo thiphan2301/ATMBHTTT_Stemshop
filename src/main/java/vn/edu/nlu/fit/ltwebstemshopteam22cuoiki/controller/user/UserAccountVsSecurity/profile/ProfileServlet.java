@@ -32,6 +32,12 @@ public class ProfileServlet extends HttpServlet {
             return;
         }
 
+        String errorFromSession = (String) session.getAttribute("error");
+        if (errorFromSession != null) {
+            request.setAttribute("error", errorFromSession);
+            session.removeAttribute("error");
+        }
+
         UserKeyDAO dao = new UserKeyDAO();
         String publicKey = dao.getPublicKey(user.getId());
         request.setAttribute("publicKey", publicKey);
