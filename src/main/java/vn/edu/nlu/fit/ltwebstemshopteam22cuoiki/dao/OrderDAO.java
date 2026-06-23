@@ -209,34 +209,60 @@ public class OrderDAO {
             while (rsOrders.next()) {
                 Order order = new Order();
                 order.setId(rsOrders.getInt("ID"));
-                order.setUserId(rsOrders.getInt("ID")); // lấy userid để lấy public key của user đó
+                order.setUserId(userId); // lấy userid để lấy public key của user đó
                 order.setOrderDate(rsOrders.getTimestamp("OrderDate"));
-                order.setOrderStatus(rsOrders.getString("OrderStatus"));
-                order.setShippingFee(rsOrders.getDouble("ShippingFee"));
-                order.setTotalAmount(rsOrders.getDouble("TotalAmount"));
-                order.setShippingAddress(rsOrders.getString("ShippingAddress"));
                 order.setReceiverName(rsOrders.getString("ReceiverName"));
                 order.setReceiverPhone(rsOrders.getString("ReceiverPhone"));
-                order.setPaymentStatus(rsOrders.getString("payment_status"));
+                order.setShippingAddress(rsOrders.getString("ShippingAddress"));
+                order.setTotalAmount(rsOrders.getDouble("TotalAmount"));
+                order.setShippingFee(rsOrders.getDouble("ShippingFee"));
                 order.setPaymentMethodId(rsOrders.getInt("payment_method_id"));
+                order.setOrderStatus(rsOrders.getString("OrderStatus"));
+                order.setPaymentStatus(rsOrders.getString("payment_status"));
                 order.setSignatureStatus(rsOrders.getString("signature_status"));
                 order.setSignature(rsOrders.getString("signature"));
-                //Kiểm tra dl thay đổi
-                order.setTampered(false); // mặc định an toàn
-                order.setTampered(false); // Mặc định là an toàn
-                if ("DA_KY".equals(order.getSignatureStatus())) {
-                    String rawData = generateRawData(order);
-                    String publicKey = userDAO.getPublicKey(order.getUserId());
 
-                    // Nếu không có khóa Đánh dấu bị sửa đổi
+                // 🚨 BƯỚC QUAN TRỌNG: Nạp danh sách sản phẩm và Khuyến mãi vào Order TRƯỚC
+                // (Để phục vụ tính toán cho Chốt 2)
+                List<OrderItem> items = getOrderItemsByOrderId(order.getId());
+                order.setItems(items);
+                order.setAppliedPromotions(getOrderPromotions(order.getId()));
+
+                //Kiểm tra dl thay đổi
+                order.setTampered(false);
+                if ("DA_KY".equals(order.getSignatureStatus())) {
+                    // kiểm tra thay đổi dl của orders
+                    String rawData = generateRawData(order);
+                    String publicKey = userDAO.getPublicKey(userId);
                     if (publicKey == null || order.getSignature() == null || !RSAUtil.verify(rawData, order.getSignature(), publicKey)) {
                         order.setTampered(true);
                     }
-                }
 
-                // LẤY DANH SÁCH SẢN PHẨM CHO ĐƠN HÀNG NÀY
-                List<OrderItem> items = getOrderItemsByOrderId(order.getId());
-                order.setItems(items);
+                    // Phát hiện sửa dl trong bảng order_detail
+                    // nếu kiểm tra thay đổi dl của orders thành công thì kiểm tra tiếp
+                    if (!order.isTampered()) {
+                        double calculatedTotal = order.getShippingFee(); // Bắt đầu bằng phí ship
+
+                        // Cộng dồn tiền từng sản phẩm (Số lượng * Giá)
+                        if (order.getItems() != null) {
+                            for (OrderItem item : order.getItems()) {
+                                calculatedTotal += item.getPrice() * item.getQuantity();
+                            }
+                        }
+
+                        // Trừ đi tiền voucher (nếu có)
+                        if (order.getAppliedPromotions() != null) {
+                            for (Double discount : order.getAppliedPromotions().values()) {
+                                calculatedTotal -= discount;
+                            }
+                        }
+
+                        // Nếu Tổng tiền tính toán KHÔNG KHỚP với TotalAmount của hóa đơn -> Có người sửa order_detail!
+                        if (Math.abs(calculatedTotal - order.getTotalAmount()) > 1.0) {
+                            order.setTampered(true);
+                        }
+                    }
+                }
 
                 orderList.add(order);
             }
