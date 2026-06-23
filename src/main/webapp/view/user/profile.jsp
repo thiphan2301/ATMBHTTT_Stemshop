@@ -363,13 +363,13 @@
     </div>
 
     <c:if test="${not empty message}">
-    <div class="alert-box success"><i class="fa-solid fa-circle-check"></i> ${message}</div>
+        <div class="alert-box success"><i class="fa-solid fa-circle-check"></i> ${message}</div>
     </c:if>
     <c:if test="${not empty error}">
-    <div class="alert-box error"><i class="fa-solid fa-circle-exclamation"></i> ${error}</div>
+        <div class="alert-box error"><i class="fa-solid fa-circle-exclamation"></i> ${error}</div>
     </c:if>
     <c:if test="${not empty error1}">
-    <div class="alert-box error"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi đổi mật khẩu: ${error1}</div>
+        <div class="alert-box error"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi đổi mật khẩu: ${error1}</div>
     </c:if>
 
     <div class="profile-body">
@@ -547,7 +547,7 @@
                             <a href="${pageContext.request.contextPath}/revoke-key" class="btn"
                                style="background-color: #c62828; color: white;"
                                onclick="return confirm('Bạn có chắc chắn muốn thu hồi (vô hiệu hóa) khóa này không? Sau khi thu hồi bạn sẽ không thể dùng nó để ký đơn hàng nữa!');">
-                                <i class="fa-solid fa-trash-can"></i> Thu Hồi Khóa Này
+                                <i class="fa-solid fa-trash-can"></i> Báo Mất Khóa
                             </a>
                         </div>
                     </c:when>
@@ -583,141 +583,142 @@
                         </form>
                     </c:otherwise>
                 </c:choose>
+                <c:if test="${not empty listKey}">
+                    <div class="form-group full-width"
+                         style="margin-top: 30px; border-top: 1px solid #ddd; padding-top: 25px;">
+                        <label style="font-size: 16px; margin-bottom: 15px;"><i class="fa-solid fa-clock-rotate-left"
+                                                                                style="color: var(--primary);"></i> Lịch
+                            Sử
+                            Các Khóa Đã Tạo</label>
 
-            <div style="margin-top: 15px;">
-              <a href="${pageContext.request.contextPath}/revoke-key" class="btn" style="background-color: #c62828; color: white;"
-                 onclick="return confirm('Bạn có chắc chắn muốn yêu cầu báo mất khóa này không? Sau khi xác nhận bạn sẽ không thể dùng nó để ký đơn hàng nữa!');">
-                <i class="fa-solid fa-trash-can"></i> Báo Mất Khóa
-              </a>
-            </div>
-            <c:if test="${not empty listKey}">
-                <div class="form-group full-width"
-                     style="margin-top: 30px; border-top: 1px solid #ddd; padding-top: 25px;">
-                    <label style="font-size: 16px; margin-bottom: 15px;"><i class="fa-solid fa-clock-rotate-left"
-                                                                            style="color: var(--primary);"></i> Lịch Sử
-                        Các Khóa Đã Tạo</label>
+                        <div style="overflow-x: auto; border: 1px solid #e0e0e0; border-radius: var(--radius);">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+                                <thead>
+                                <tr style="background-color: #f9f9f9; border-bottom: 2px solid #e0e0e0;">
+                                    <th style="padding: 12px 15px;">ID</th>
+                                    <th style="padding: 12px 15px;">Khóa</th>
+                                    <th style="padding: 12px 15px;">Ngày tạo</th>
+                                    <th style="padding: 12px 15px;">Ngày thu hồi</th>
+                                    <th style="padding: 12px 15px; text-align: center;">Trạng thái</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="key" items="${listKey}">
+                                    <tr style="border-bottom: 1px solid #eee;">
+                                        <td style="padding: 12px 15px; font-weight: bold; color: #555;">${key.id}</td>
 
-                    <div style="overflow-x: auto; border: 1px solid #e0e0e0; border-radius: var(--radius);">
-                        <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
-                            <thead>
-                            <tr style="background-color: #f9f9f9; border-bottom: 2px solid #e0e0e0;">
-                                <th style="padding: 12px 15px;">ID</th>
-                                <th style="padding: 12px 15px;">Khóa</th>
-                                <th style="padding: 12px 15px;">Ngày tạo</th>
-                                <th style="padding: 12px 15px;">Ngày thu hồi</th>
-                                <th style="padding: 12px 15px; text-align: center;">Trạng thái</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:forEach var="key" items="${listKey}">
-                                <tr style="border-bottom: 1px solid #eee;">
-                                    <td style="padding: 12px 15px; font-weight: bold; color: #555;">${key.id}</td>
+                                        <td style="padding: 12px 15px; font-family: monospace; color: #333; letter-spacing: 0.5px;">${key.formatStringPublicKey}</td>
 
-                                    <td style="padding: 12px 15px; font-family: monospace; color: #333; letter-spacing: 0.5px;">${key.formatStringPublicKey}</td>
+                                        <td style="padding: 12px 15px;">
+                                            <fmt:formatDate value="${key.createdAt}" pattern="dd/MM/yyyy HH:mm"
+                                                            timeZone="Asia/Ho_Chi_Minh"/>
+                                        </td>
 
-                                    <td style="padding: 12px 15px;">
-                                        <fmt:formatDate value="${key.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
-                                    </td>
+                                        <td style="padding: 12px 15px;">
+                                            <c:choose>
+                                                <c:when test="${!key.activeKey}">
+                                                    <fmt:formatDate value="${key.revokedAt}"
+                                                                    pattern="dd/MM/yyyy HH:mm"
+                                                                    timeZone="Asia/Ho_Chi_Minh"/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span style="color: #999; font-style: italic;">Chưa thu hồi</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
 
-                                    <td style="padding: 12px 15px;">
-                                        <c:choose>
-                                            <c:when test="${!key.activeKey}">
-                                                <fmt:formatDate value="${key.revokedAt}" pattern="dd/MM/yyyy HH:mm"/>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span style="color: #999; font-style: italic;">Chưa thu hồi</span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </td>
-
-                                    <td style="padding: 12px 15px; text-align: center;">
-                                        <c:choose>
-                                            <c:when test="${key.activeKey}">
+                                        <td style="padding: 12px 15px; text-align: center;">
+                                            <c:choose>
+                                                <c:when test="${key.activeKey}">
                           <span style="display: inline-block; background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid #c8e6c9;">
                             Đang hoạt động
                           </span>
-                                            </c:when>
-                                            <c:otherwise>
+                                                </c:when>
+                                                <c:otherwise>
                           <span style="display: inline-block; background: #f5f5f5; color: #757575; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid #e0e0e0;">
                             Vô hiệu hóa
                           </span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                            </tbody>
-                        </table>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            </c:if>
+                </c:if>
+            </div>
+        </div>
+        <div style="background-color: #f0f7ff; border: 1px solid #b3d7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: Arial, sans-serif;">
+            <h4 style="margin-top: 0; color: #0056b3; font-size: 16px;"><i class="fa-solid fa-download"></i> Tải Phần
+                Mềm Ký Số Độc Lập (Dành cho Máy tính)</h4>
+            <p style="font-size: 14px; color: #333; margin-bottom: 12px;">Hãy tải công cụ chính thức bên dưới, giải nén
+                và khởi chạy trực tiếp để tạo khóa hoặc ký số đơn hàng.</p>
+
+            <a href="${pageContext.request.contextPath}/assets/tools/SignatureTool.zip" download="SignatureTool.zip"
+               class="btn"
+               style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-file-zipper"></i> Tải Tool Ký Số (.ZIP)
+            </a>
         </div>
     </div>
-      <div style="background-color: #f0f7ff; border: 1px solid #b3d7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: Arial, sans-serif;">
-          <h4 style="margin-top: 0; color: #0056b3; font-size: 16px;"><i class="fa-solid fa-download"></i> Tải Phần Mềm Ký Số Độc Lập (Dành cho Máy tính)</h4>
-          <p style="font-size: 14px; color: #333; margin-bottom: 12px;">Hãy tải công cụ chính thức bên dưới, giải nén và khởi chạy trực tiếp để tạo khóa hoặc ký số đơn hàng.</p>
-
-          <a href="${pageContext.request.contextPath}/assets/tools/SignatureTool.zip" download="SignatureTool.zip" class="btn" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px;">
-              <i class="fa-solid fa-file-zipper"></i> Tải Tool Ký Số (.ZIP)
-          </a>
-      </div>
-</div>
 </div>
 
-    <%@ include file="/WEB-INF/components/footer.jsp" %>
+<%@ include file="/WEB-INF/components/footer.jsp" %>
 
-    <script>
-        function togglePublicKeyBox() {
-            const keyBox = document.getElementById("publicKeyBox");
-            const passBox = document.getElementById("passwordBox");
+<script>
+    function togglePublicKeyBox() {
+        const keyBox = document.getElementById("publicKeyBox");
+        const passBox = document.getElementById("passwordBox");
 
-            if (keyBox.style.display === "none" || keyBox.style.display === "") {
-                keyBox.style.display = "block";
-                if (passBox) passBox.style.display = "none"; // Ẩn box kia đi
-                keyBox.scrollIntoView({behavior: 'smooth', block: 'center'});
-            } else {
-                keyBox.style.display = "none";
-            }
+        if (keyBox.style.display === "none" || keyBox.style.display === "") {
+            keyBox.style.display = "block";
+            if (passBox) passBox.style.display = "none"; // Ẩn box kia đi
+            keyBox.scrollIntoView({behavior: 'smooth', block: 'center'});
+        } else {
+            keyBox.style.display = "none";
         }
+    }
 
-        function togglePasswordBox() {
-            const passBox = document.getElementById("passwordBox");
-            const keyBox = document.getElementById("publicKeyBox");
+    function togglePasswordBox() {
+        const passBox = document.getElementById("passwordBox");
+        const keyBox = document.getElementById("publicKeyBox");
 
-            if (passBox.style.display === "none" || passBox.style.display === "") {
-                passBox.style.display = "block";
-                if (keyBox) keyBox.style.display = "none"; // Ẩn box kia đi
-                passBox.scrollIntoView({behavior: 'smooth', block: 'center'});
-            } else {
-                passBox.style.display = "none";
-            }
+        if (passBox.style.display === "none" || passBox.style.display === "") {
+            passBox.style.display = "block";
+            if (keyBox) keyBox.style.display = "none"; // Ẩn box kia đi
+            passBox.scrollIntoView({behavior: 'smooth', block: 'center'});
+        } else {
+            passBox.style.display = "none";
         }
+    }
 
-        document.getElementById("avatarInput").addEventListener("change", function (e) {
-            const file = e.target.files[0];
-            if (file) {
-                // Validate sơ bộ dung lượng (1MB = 1048576 bytes)
-                if (file.size > 1048576) {
-                    alert("Dung lượng file quá lớn. Vui lòng chọn file dưới 1MB.");
-                    this.value = ''; // Reset file
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = function () {
-                    document.getElementById("avatarPreview").src = reader.result;
-                };
-                reader.readAsDataURL(file);
+    document.getElementById("avatarInput").addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate sơ bộ dung lượng (1MB = 1048576 bytes)
+            if (file.size > 1048576) {
+                alert("Dung lượng file quá lớn. Vui lòng chọn file dưới 1MB.");
+                this.value = ''; // Reset file
+                return;
             }
-        });
+            const reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById("avatarPreview").src = reader.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
-        // Code liên kết thuộc tính form
-        // Vì thẻ <input type="file"> bị kéo ra khỏi form nên ta dùng javascript ghép vào hoặc để nó bên trong form.
-        // Trong HTML ở trên mình đã giải quyết bằng cách bọc form chuẩn chỉ, <input file> sẽ kích hoạt bình thường.
-        document.querySelector('.profile-form').appendChild(document.getElementById('avatarInput'));
-    </script>
+    // Code liên kết thuộc tính form
+    // Vì thẻ <input type="file"> bị kéo ra khỏi form nên ta dùng javascript ghép vào hoặc để nó bên trong form.
+    // Trong HTML ở trên mình đã giải quyết bằng cách bọc form chuẩn chỉ, <input file> sẽ kích hoạt bình thường.
+    document.querySelector('.profile-form').appendChild(document.getElementById('avatarInput'));
+</script>
 
-    <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/js/pages/API%20_dia_chi.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/pages/API%20_dia_chi.js"></script>
 
 </body>
 </html>

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.UserKeyDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.EmailUtils;
 
 import java.io.IOException;
 
@@ -24,9 +25,11 @@ public class RevokePublicKeyServlet extends HttpServlet {
 
         UserKeyDAO userKeyDAO = new UserKeyDAO();
         try {
-            boolean isRevoke = userKeyDAO.revokeActiveKey(user.getId());
+            String token = userKeyDAO.createToken(user.getId());
+            String confirmLink = "http://localhost:8080/confirm-revoke?token=" + token;
+            boolean isRevoke = EmailUtils.sendRevokeKeyEmail(user.getEmail(), confirmLink);
             if(isRevoke) {
-                session.setAttribute("message", "Thu hồi khóa thành công");
+                session.setAttribute("message", "Đã gửi xác nhận thu hồi khóa cho bạn vào Email " + user.getEmail() + ", vui lòng kiểm tra hộp thư");
                 session.setAttribute("errorPublicKey", "show");
             } else {
                 session.setAttribute("errorPublicKey", "Không tìm thấy khóa nào để thu hồi hoặc đã xảy ra lỗi.");

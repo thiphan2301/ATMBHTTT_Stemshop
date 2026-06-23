@@ -36,7 +36,7 @@ public class UpdatePublicKeyServlet extends HttpServlet {
             if (filePart != null && filePart.getSize() > 0) {
                 InputStream is = filePart.getInputStream();
                 try (Scanner sc = new Scanner(is, StandardCharsets.UTF_8)) {
-                    // Đọc toàn bộ nội dung file thành 1 chuỗi String
+                    // Đọc toàn bộ nội dung file thành string
                     publicKey = sc.useDelimiter("\\A").hasNext() ? sc.next() : "";
                 }
             } else {
@@ -45,13 +45,22 @@ public class UpdatePublicKeyServlet extends HttpServlet {
             if (publicKey != null) publicKey = publicKey.trim();
 
         } catch (Exception e) {
-            req.setAttribute("errorPublicKey", "Lỗi không thể đọc file đính kèm");
+            session.setAttribute("errorPublicKey", "show");
+            session.setAttribute("error", "Lỗi không thể đọc file đính kèm");
             resp.sendRedirect(req.getContextPath() + "/profile");
             return;
         }
 
         if(publicKey == null || publicKey.isEmpty()) {
-            req.setAttribute("errorPublicKey", "Lỗi để trống key! ");
+            session.setAttribute("errorPublicKey", "show");
+            session.setAttribute("error", "Lỗi để trống key! ");
+            resp.sendRedirect(req.getContextPath() + "/profile");
+            return;
+        }
+
+        if(userKeyDAO.isKeyAlreadyExist(user.getId(), publicKey)) {
+            session.setAttribute("errorPublicKey", "show");
+            session.setAttribute("error", "Khóa này đã từng được bạn sử dụng!");
             resp.sendRedirect(req.getContextPath() + "/profile");
             return;
         }
