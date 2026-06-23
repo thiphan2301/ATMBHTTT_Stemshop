@@ -110,6 +110,7 @@
                     <th>Phương thức thanh toán</th>
                     <th>Trạng thái đơn hàng</th>
                     <th>Trạng thái thanh toán</th>
+                    <th>Trạng thái ký số</th>
                     <th>Thao tác</th>
                 </tr>
                 </thead>
@@ -147,6 +148,34 @@
                                 </c:when>
                                 <c:otherwise>
                                     <span style="color: gray;">Chưa thanh toán</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td style="text-align: center;">
+                            <c:choose>
+                                <%-- 1. Đang chờ ký --%>
+                                <c:when test="${o.signatureStatus == 'CHO_KY_SO' && o.orderStatus != 'CANCELLED'}">
+                                    <span style="color: #ff9800; font-weight: bold; font-size: 0.9rem;">
+                                        <i class="fas fa-file-signature"></i> Chờ ký
+                                    </span>
+                                </c:when>
+
+                                <%-- 2. Đã ký xác thực --%>
+                                <c:when test="${o.signatureStatus == 'DA_KY'}">
+                                    <span style="color: #4CAF50; font-weight: bold; font-size: 0.9rem;">
+                                        <i class="fas fa-check-circle"></i> Đã ký
+                                    </span>
+                                </c:when>
+
+                                <%-- 3. Đã hủy hoặc quá hạn --%>
+                                <c:when test="${o.signatureStatus == 'DA_HUY' || o.orderStatus == 'CANCELLED'}">
+                                    <span style="color: #757575; font-weight: bold; font-size: 0.9rem;">
+                                        <i class="fas fa-file-excel"></i> Hủy/Thất bại
+                                    </span>
+                                </c:when>
+
+                                <c:otherwise>
+                                    <span style="color: #333;">${o.signatureStatus}</span>
                                 </c:otherwise>
                             </c:choose>
                         </td>
